@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scout — Know what's in your food</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber: #BA7517;
+      --amber-dark: #854F0B;
+      --amber-bg: #FAEEDA;
+      --amber-border: #FAC775;
+      --green-bg: #E1F5EE;
+      --green-text: #085041;
+      --green-border: #5DCAA5;
+      --red-bg: #FCEBEB;
+      --red-text: #A32D2D;
+      --red-border: #F09595;
+      --red-dark: #791F1F;
+      --caution-text: #633806;
+      --text-primary: #1A1A18;
+      --text-secondary: #555550;
+      --text-tertiary: #888780;
+      --border: #E2E1DC;
+      --border-light: #EEEDE8;
+      --bg: #F7F5F0;
+      --bg-card: #FFFFFF;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 0 16px 48px;
+    }
+
+    .wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      padding-top: 32px;
+    }
+
+    /* SCREENS */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* LOGO */
+    .logo { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 2px; }
+    .logo span { color: var(--amber); }
+    .logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+
+    /* ONBOARDING */
+    .ob-progress { display: flex; gap: 5px; margin-bottom: 24px; }
+    .ob-dot { height: 3px; border-radius: 2px; flex: 1; background: var(--border); transition: background 0.2s; }
+    .ob-dot.done { background: var(--amber); }
+    .ob-headline { font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 1.3; margin-bottom: 8px; }
+    .ob-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
+    .ob-tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .ob-tile {
+      font-size: 13px; color: var(--text-secondary);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 8px 14px; cursor: pointer; user-select: none;
+      transition: all 0.15s; background: var(--bg-card);
+    }
+    .ob-tile:hover { background: var(--bg); }
+    .ob-tile.sel-care { background: var(--amber-bg); border-color: var(--amber-border); color: var(--caution-text); font-weight: 500; }
+    .ob-tile.sel-avoid { background: var(--red-bg); border-color: var(--red-border); color: var(--red-dark); font-weight: 500; }
+    .ob-actions { display: flex; align-items: center; gap: 12px; }
+
+    /* SUMMARY SCREEN */
+    .ob-summary-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
+    .ob-summary-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .ob-summary-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ob-tag-care { font-size: 12px; padding: 3px 9px; border-radius: 20px; background: var(--amber-bg); color: var(--caution-text); }
+    .ob-tag-avoid { font-size: 12px; padding: 3px 9px; border-radius: 20px; background: var(--red-bg); color: var(--red-dark); }
+    .ob-tag-none { font-size: 13px; color: var(--text-tertiary); font-style: italic; }
+    .ob-ready-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--amber-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+
+    /* BUTTONS */
+    .btn-primary {
+      font-size: 14px; padding: 10px 22px; border-radius: var(--radius-md);
+      cursor: pointer; font-family: inherit; background: var(--amber);
+      border: none; color: #fff; font-weight: 500; transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--amber-dark); }
+    .btn-ghost {
+      font-size: 13px; color: var(--text-tertiary); background: none;
+      border: none; cursor: pointer; font-family: inherit; padding: 0;
+    }
+    .btn-ghost:hover { color: var(--text-secondary); }
+    .btn-sm {
+      font-size: 12px; color: var(--text-tertiary); background: none;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      cursor: pointer; font-family: inherit; padding: 5px 10px;
+    }
+    .btn-sm:hover { background: var(--bg); }
+    .btn-action {
+      font-size: 12px; padding: 7px 13px; border-radius: var(--radius-md);
+      cursor: pointer; font-family: inherit; background: none;
+      border: 1px solid var(--border); color: var(--text-secondary);
+      display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s;
+    }
+    .btn-action:hover { background: var(--bg); }
+    .btn-action.saved { border-color: var(--green-border); color: var(--green-text); background: var(--green-bg); }
+
+    /* PROFILE BAR */
+    .profile-bar {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 8px 12px; background: var(--bg-card);
+      border: 1px solid var(--border-light); border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+    .pb-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .ptag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--amber-bg); color: var(--caution-text); }
+    .ptag-avoid { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--red-bg); color: var(--red-dark); }
+    .pb-edit { font-size: 11px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; margin-left: auto; font-family: inherit; }
+    .pb-edit:hover { color: var(--text-secondary); }
+
+    /* BANNER */
+    .banner {
+      border: 1px solid var(--amber-border); background: var(--amber-bg);
+      border-radius: var(--radius-lg); padding: 12px 14px;
+      margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .banner.hidden { display: none; }
+    .banner-icon { font-size: 18px; color: var(--amber-dark); flex-shrink: 0; margin-top: 1px; }
+    .banner-body { flex: 1; }
+    .banner-title { font-size: 13px; font-weight: 500; color: #412402; margin-bottom: 3px; }
+    .banner-text { font-size: 12px; color: var(--caution-text); line-height: 1.55; }
+    .banner-dismiss { font-size: 11px; color: var(--amber-dark); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; margin-top: 7px; display: block; }
+    .banner-dismiss:hover { text-decoration: underline; }
+    .banner-close { font-size: 16px; color: var(--amber-dark); background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+
+    /* INPUT */
+    .input-label { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+    textarea {
+      width: 100%; min-height: 120px; resize: vertical;
+      font-size: 13px; font-family: inherit; border-radius: var(--radius-md);
+      padding: 12px 14px; color: var(--text-primary); background: var(--bg-card);
+      border: 1px solid var(--border); outline: none; transition: border-color 0.15s;
+    }
+    textarea:focus { border-color: var(--amber); }
+    .hint { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; margin-bottom: 16px; }
+    .input-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* LOADING */
+    .load-wrap { text-align: center; padding: 48px 0; }
+    .load-icon { font-size: 28px; color: var(--amber); margin-bottom: 16px; animation: spin 1.2s linear infinite; display: inline-block; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .load-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+    .load-sub { font-size: 13px; color: var(--text-secondary); }
+    .load-steps { margin-top: 24px; display: flex; flex-direction: column; gap: 8px; max-width: 240px; margin-left: auto; margin-right: auto; }
+    .load-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-tertiary); }
+    .load-step.done { color: var(--text-secondary); }
+
+    /* RESULTS */
+    .results-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .results-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+    .results-meta { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+
+    .summary { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 10px 14px; flex: 1; min-width: 80px; }
+    .stat-n { font-size: 20px; font-weight: 600; }
+    .stat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    .section-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; }
+
+    /* CARDS */
+    .card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: 8px; overflow: hidden; }
+    .card.is-flag { border-left: 3px solid var(--red-border); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+    .card.is-positive { border-left: 3px solid var(--green-border); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+    .card-head { display: flex; align-items: center; gap: 8px; padding: 13px 15px; cursor: pointer; user-select: none; }
+    .card-head:hover { background: var(--bg); }
+    .card-name { font-size: 13px; font-weight: 500; color: var(--text-primary); flex: 1; }
+    .card-plain { font-size: 11px; color: var(--text-tertiary); font-weight: 400; }
+    .pill { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+    .p-safe { background: #EAF3DE; color: #3B6D11; }
+    .p-caution { background: var(--amber-bg); color: #854F0B; }
+    .p-flag { background: var(--red-bg); color: var(--red-text); }
+    .p-neutral { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); }
+    .p-positive { background: var(--green-bg); color: var(--green-text); }
+    .chev { color: var(--text-tertiary); font-size: 15px; transition: transform 0.18s; flex-shrink: 0; }
+    .chev.open { transform: rotate(180deg); }
+    .card-body { display: none; padding: 0 15px 13px; border-top: 1px solid var(--border-light); }
+    .card-body.open { display: block; }
+    .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; margin-top: 11px; }
+    .card-role { font-size: 12px; color: var(--text-tertiary); margin-top: 5px; }
+    .card-note { font-size: 12px; margin-top: 8px; padding: 7px 10px; border-radius: var(--radius-sm); line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
+    .note-flag { background: var(--red-bg); color: var(--red-dark); }
+    .note-positive { background: var(--green-bg); color: var(--green-text); }
+    .note-caution { background: var(--amber-bg); color: var(--caution-text); }
+
+    /* ACTION BAR */
+    .action-bar { display: flex; align-items: center; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+    .action-spacer { flex: 1; }
+
+    /* RENAME */
+    .rename-wrap { display: none; align-items: center; gap: 8px; margin-top: 10px; }
+    .rename-wrap.show { display: flex; }
+    .rename-input { flex: 1; font-size: 13px; font-family: inherit; border-radius: var(--radius-md); padding: 7px 10px; border: 1px solid var(--amber); color: var(--text-primary); background: var(--bg-card); outline: none; }
+
+    /* TOAST */
+    .toast { display: none; align-items: center; gap: 6px; font-size: 12px; border-radius: var(--radius-md); padding: 7px 12px; margin-top: 8px; }
+    .toast.show { display: flex; }
+    .toast-save { color: var(--green-text); background: var(--green-bg); }
+    .toast-copy { color: var(--caution-text); background: var(--amber-bg); }
+    .toast-error { color: var(--red-dark); background: var(--red-bg); }
+
+    /* HISTORY */
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--text-tertiary); }
+    .empty-state i { font-size: 32px; display: block; margin-bottom: 12px; color: var(--border); }
+    .empty-state p { font-size: 13px; line-height: 1.6; }
+    .scan-row { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 13px 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s; }
+    .scan-row:hover { background: var(--bg); }
+    .scan-row-body { flex: 1; min-width: 0; }
+    .scan-row-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .scan-row-meta { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .scan-flag-badge { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: var(--red-bg); color: var(--red-text); }
+    .scan-del { font-size: 15px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0; transition: color 0.15s; }
+    .scan-del:hover { color: var(--red-text); }
+
+    .scans-btn { font-size: 12px; color: var(--text-tertiary); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
+    .scans-btn:hover { background: var(--bg); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ONBOARDING: SCREEN 1 — WHAT DO YOU CARE ABOUT -->
+  <div class="screen active" id="s-ob1">
+    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="ob-progress">
+      <div class="ob-dot done"></div>
+      <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
+    </div>
+    <div class="ob-headline">What do you care about when it comes to food?</div>
+    <div class="ob-sub">Pick everything that feels true. This helps Scout highlight what matters most to you — nothing more.</div>
+    <div class="ob-tiles" id="care-tiles">
+      <div class="ob-tile" data-val="blood sugar">Blood sugar</div>
+      <div class="ob-tile" data-val="weight loss">Weight loss</div>
+      <div class="ob-tile" data-val="muscle &amp; protein">Muscle &amp; protein</div>
+      <div class="ob-tile" data-val="gut health">Gut health</div>
+      <div class="ob-tile" data-val="heart health">Heart health</div>
+      <div class="ob-tile" data-val="clean ingredients">Clean ingredients</div>
+      <div class="ob-tile" data-val="environmental impact">Environmental impact</div>
+      <div class="ob-tile" data-val="just curious">Just curious</div>
+    </div>
+    <div class="ob-actions">
+      <button class="btn-primary" id="ob1-next">Next</button>
+    </div>
+  </div>
+
+  <!-- ONBOARDING: SCREEN 2 — ANYTHING TO AVOID -->
+  <div class="screen" id="s-ob2">
+    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="ob-progress">
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+      <div class="ob-dot"></div>
+    </div>
+    <div class="ob-headline">Anything you're avoiding?</div>
+    <div class="ob-sub">Scout will always flag these for you. Skip this if nothing applies.</div>
+    <div class="ob-tiles" id="avoid-tiles">
+      <div class="ob-tile" data-val="gluten">Gluten</div>
+      <div class="ob-tile" data-val="dairy">Dairy</div>
+      <div class="ob-tile" data-val="soy">Soy</div>
+      <div class="ob-tile" data-val="tree nuts">Tree nuts</div>
+      <div class="ob-tile" data-val="seed oils">Seed oils</div>
+      <div class="ob-tile" data-val="added sugar">Added sugar</div>
+      <div class="ob-tile" data-val="artificial sweeteners">Artificial sweeteners</div>
+      <div class="ob-tile" data-val="artificial dyes">Artificial dyes</div>
+      <div class="ob-tile" data-val="palm oil">Palm oil</div>
+      <div class="ob-tile" data-val="high fructose corn syrup">High fructose corn syrup</div>
+      <div class="ob-tile" data-val="gums &amp; thickeners">Gums &amp; thickeners</div>
+      <div class="ob-tile" data-val="natural flavors">Natural flavors</div>
+    </div>
+    <div class="ob-actions">
+      <button class="btn-primary" id="ob2-next">Next</button>
+      <button class="btn-ghost" id="ob2-skip">Skip</button>
+    </div>
+  </div>
+
+  <!-- ONBOARDING: SCREEN 3 — SUMMARY -->
+  <div class="screen" id="s-ob3">
+    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="ob-progress">
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+    </div>
+    <div class="ob-ready-icon"><i class="ti ti-check" style="font-size:20px;color:#854F0B"></i></div>
+    <div class="ob-headline">You're all set.</div>
+    <div class="ob-sub">Here's what Scout will keep in mind. You can always update this later.</div>
+    <div class="ob-summary-card">
+      <div class="ob-summary-label">I care about</div>
+      <div class="ob-summary-tags" id="summary-care"></div>
+    </div>
+    <div class="ob-summary-card">
+      <div class="ob-summary-label">Always flag</div>
+      <div class="ob-summary-tags" id="summary-avoid"></div>
+    </div>
+    <div class="ob-actions" style="margin-top:20px">
+      <button class="btn-primary" id="ob3-done">Start reading labels ↗</button>
+    </div>
+  </div>
+
+  <!-- INPUT SCREEN -->
+  <div class="screen" id="s-input">
+    <div class="logo-row">
+      <div class="logo">Sc<span>ou</span>t</div>
+      <button class="scans-btn" id="go-history"><i class="ti ti-bookmark" style="font-size:13px"></i> Saved</button>
+    </div>
+
+    <div class="banner" id="welcome-banner">
+      <i class="ti ti-bulb banner-icon"></i>
+      <div class="banner-body">
+        <div class="banner-title">How Scout works</div>
+        <div class="banner-text">Paste any food label's ingredient list and Scout will break down what each ingredient actually is — in plain English, filtered through your goals. No scores. No verdicts. Just clarity.</div>
+        <button class="banner-dismiss" id="banner-dismiss">Got it — don't show this again</button>
+      </div>
+      <button class="banner-close" id="banner-close"><i class="ti ti-x" style="font-size:14px"></i></button>
+    </div>
+
+    <div class="profile-bar" id="profile-bar-input">
+      <span class="pb-label">Your lens</span>
+      <span id="profile-tags-input"></span>
+      <button class="pb-edit" id="edit-profile-btn">edit ↗</button>
+    </div>
+
+    <div class="input-label">Paste the ingredient list</div>
+    <textarea id="ing-input" placeholder="e.g. Enriched Wheat Flour (wheat flour, niacin...), Sugar, Palm Oil, Salt..."></textarea>
+    <div class="hint">Copy from any food label or nutrition website. Paste it exactly as written.</div>
+    <div class="input-actions">
+      <button class="btn-primary" id="analyze-btn">Analyze ↗</button>
+      <button class="btn-ghost" id="demo-btn">Try an example</button>
+    </div>
+
+    <div class="toast toast-error" id="toast-error"><i class="ti ti-alert-circle" style="font-size:14px"></i> <span id="error-msg">Something went wrong. Try again.</span></div>
+  </div>
+
+  <!-- LOADING SCREEN -->
+  <div class="screen" id="s-loading">
+    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="load-wrap">
+      <i class="ti ti-loader load-icon"></i>
+      <div class="load-title">Reading the label...</div>
+      <div class="load-sub">Breaking down each ingredient for your goals</div>
+      <div class="load-steps">
+        <div class="load-step" id="ls1"><i class="ti ti-circle"></i> Identifying ingredients</div>
+        <div class="load-step" id="ls2"><i class="ti ti-circle"></i> Looking each one up</div>
+        <div class="load-step" id="ls3"><i class="ti ti-circle"></i> Matching to your profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="s-results">
+    <div class="logo-row">
+      <div class="logo">Sc<span>ou</span>t</div>
+      <button class="btn-sm" id="back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> New scan</button>
+    </div>
+
+    <div class="results-header">
+      <div>
+        <div class="results-title" id="r-name">Ingredient breakdown</div>
+        <div class="results-meta" id="r-meta"></div>
+      </div>
+    </div>
+
+    <div class="profile-bar">
+      <span class="pb-label">Filtered for</span>
+      <span id="profile-tags-results"></span>
+    </div>
+
+    <div class="summary">
+      <div class="stat"><div class="stat-n" id="r-total">—</div><div class="stat-l">total</div></div>
+      <div class="stat"><div class="stat-n" id="r-pos" style="color:var(--green-text)">—</div><div class="stat-l">works for you</div></div>
+      <div class="stat"><div class="stat-n" id="r-caut" style="color:#854F0B">—</div><div class="stat-l">heads up</div></div>
+      <div class="stat"><div class="stat-n" id="r-flag" style="color:var(--red-text)">—</div><div class="stat-l">worth noting</div></div>
+    </div>
+
+    <div id="flagged-section" style="display:none">
+      <div class="section-label">Worth noting for you</div>
+      <div id="flagged-cards"></div>
+    </div>
+    <div class="section-label" id="other-label">All ingredients</div>
+    <div id="other-cards"></div>
+
+    <div class="action-bar">
+      <button class="btn-action" id="save-btn"><i class="ti ti-bookmark" style="font-size:13px"></i> Save scan</button>
+      <button class="btn-action" id="share-btn"><i class="ti ti-copy" style="font-size:13px"></i> Copy summary</button>
+      <span class="action-spacer"></span>
+      <button class="btn-ghost" id="new-scan-btn" style="font-size:12px">+ New scan</button>
+    </div>
+    <div class="rename-wrap" id="rename-wrap">
+      <input class="rename-input" id="rename-input" placeholder="Name this scan..." />
+      <button class="btn-primary" id="rename-save-btn" style="font-size:12px;padding:7px 12px">Save</button>
+    </div>
+    <div class="toast toast-save" id="toast-save"><i class="ti ti-check" style="font-size:13px"></i> <span id="toast-save-msg">Saved!</span></div>
+    <div class="toast toast-copy" id="toast-copy"><i class="ti ti-check" style="font-size:13px"></i> Summary copied to clipboard</div>
+  </div>
+
+  <!-- HISTORY SCREEN -->
+  <div class="screen" id="s-history">
+    <div class="logo-row">
+      <div class="logo">Sc<span>ou</span>t</div>
+      <button class="btn-sm" id="history-back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> Back</button>
+    </div>
+    <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:16px">Saved scans</div>
+    <div id="history-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let profile = JSON.parse(localStorage.getItem('scout_profile') || 'null');
+let savedScans = JSON.parse(localStorage.getItem('scout_scans') || '[]');
+let currentResults = null;
+let currentScanName = '';
+let currentScanSaved = false;
+let bannerDismissed = localStorage.getItem('scout_banner') === '1';
+
+const DEMO = "Enriched Wheat Flour (wheat flour, niacin, reduced iron, thiamine mononitrate, riboflavin, folic acid), Protein Blend (vital wheat gluten, pea protein, rice protein), Semi-Sweet Chocolate Chips (unsweetened chocolate, sugar, cocoa butter, dextrose, natural vanilla extract), Inulin, Cane Sugar, Invert Sugar, Vegetable Glycerine, Palm Fruit Oil, Sunflower Lecithin or Canola Lecithin, Natural Flavor, Baking Soda, Salt, Xanthan Gum, Guar Gum.";
+
+// ── SCREENS ────────────────────────────────────────────────────────────────
+function setScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+function init() {
+  if (bannerDismissed) document.getElementById('welcome-banner').classList.add('hidden');
+  if (!profile) {
+    setScreen('s-ob1');
+  } else {
+    renderProfileBars();
+    setScreen('s-input');
+  }
+}
+
+// ── ONBOARDING ─────────────────────────────────────────────────────────────
+let careSelected = [];
+let avoidSelected = [];
+
+document.querySelectorAll('#care-tiles .ob-tile').forEach(t => {
+  t.addEventListener('click', () => {
+    const v = t.dataset.val;
+    if (careSelected.includes(v)) { careSelected = careSelected.filter(x => x !== v); t.classList.remove('sel-care'); }
+    else { careSelected.push(v); t.classList.add('sel-care'); }
+  });
+});
+
+document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
+  t.addEventListener('click', () => {
+    const v = t.dataset.val;
+    if (avoidSelected.includes(v)) { avoidSelected = avoidSelected.filter(x => x !== v); t.classList.remove('sel-avoid'); }
+    else { avoidSelected.push(v); t.classList.add('sel-avoid'); }
+  });
+});
+
+document.getElementById('ob1-next').addEventListener('click', () => setScreen('s-ob2'));
+
+function showSummary() {
+  const careEl = document.getElementById('summary-care');
+  const avoidEl = document.getElementById('summary-avoid');
+  careEl.innerHTML = careSelected.length
+    ? careSelected.map(v => `<span class="ob-tag-care">${v}</span>`).join('')
+    : '<span class="ob-tag-none">Nothing selected</span>';
+  avoidEl.innerHTML = avoidSelected.length
+    ? avoidSelected.map(v => `<span class="ob-tag-avoid">${v}</span>`).join('')
+    : '<span class="ob-tag-none">Nothing selected</span>';
+  setScreen('s-ob3');
+}
+
+document.getElementById('ob2-next').addEventListener('click', showSummary);
+document.getElementById('ob2-skip').addEventListener('click', showSummary);
+
+document.getElementById('ob3-done').addEventListener('click', () => {
+  profile = { cares: careSelected, avoids: avoidSelected };
+  localStorage.setItem('scout_profile', JSON.stringify(profile));
+  renderProfileBars();
+  setScreen('s-input');
+});
+
+document.getElementById('edit-profile-btn').addEventListener('click', () => {
+  careSelected = profile ? [...profile.cares] : [];
+  avoidSelected = profile ? [...profile.avoids] : [];
+  document.querySelectorAll('#care-tiles .ob-tile').forEach(t => {
+    t.classList.toggle('sel-care', careSelected.includes(t.dataset.val));
+  });
+  document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
+    t.classList.toggle('sel-avoid', avoidSelected.includes(t.dataset.val));
+  });
+  setScreen('s-ob1');
+});
+
+// ── PROFILE BARS ───────────────────────────────────────────────────────────
+function renderProfileBars() {
+  if (!profile) return;
+  const tags = [
+    ...profile.cares.map(c => `<span class="ptag">${c}</span>`),
+    ...profile.avoids.map(a => `<span class="ptag-avoid">no ${a}</span>`)
+  ].join('');
+  document.getElementById('profile-tags-input').innerHTML = tags;
+  document.getElementById('profile-tags-results').innerHTML = tags;
+}
+
+// ── BANNER ─────────────────────────────────────────────────────────────────
+function dismissBanner() {
+  bannerDismissed = true;
+  localStorage.setItem('scout_banner', '1');
+  document.getElementById('welcome-banner').classList.add('hidden');
+}
+document.getElementById('banner-dismiss').addEventListener('click', dismissBanner);
+document.getElementById('banner-close').addEventListener('click', dismissBanner);
+
+// ── LOADING ANIMATION ──────────────────────────────────────────────────────
+function animateSteps(cb) {
+  const steps = ['ls1','ls2','ls3'];
+  let i = 0;
+  document.querySelectorAll('.load-step').forEach(s => { s.classList.remove('done'); s.querySelector('i').className = 'ti ti-circle'; });
+  function next() {
+    if (i < steps.length) {
+      const el = document.getElementById(steps[i]);
+      el.classList.add('done');
+      el.querySelector('i').className = 'ti ti-check';
+      i++;
+      if (i < steps.length) setTimeout(next, 700);
+    }
+  }
+  setTimeout(next, 300);
+  setTimeout(cb, 2200);
+}
+
+// ── ANALYZE ────────────────────────────────────────────────────────────────
+async function analyze(text) {
+  setScreen('s-loading');
+  document.getElementById('toast-error').classList.remove('show');
+
+  const goals = profile ? profile.cares.join(', ') : '';
+  const avoids = profile ? profile.avoids.join(', ') : '';
+
+  let apiDone = false;
+  let animDone = false;
+  let results = null;
+
+  function tryRender() {
+    if (apiDone && animDone && results) renderResults(results);
+  }
+
+  animateSteps(() => { animDone = true; tryRender(); });
+
+  try {
+    const res = await fetch('/.netlify/functions/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ingredients: text, goals, avoids })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    results = data;
+    apiDone = true;
+    tryRender();
+  } catch (err) {
+    setScreen('s-input');
+    const errEl = document.getElementById('toast-error');
+    document.getElementById('error-msg').textContent = 'Something went wrong. Try again.';
+    errEl.classList.add('show');
+    setTimeout(() => errEl.classList.remove('show'), 4000);
+  }
+}
+
+document.getElementById('analyze-btn').addEventListener('click', () => {
+  const text = document.getElementById('ing-input').value.trim();
+  if (!text) return;
+  analyze(text);
+});
+
+document.getElementById('demo-btn').addEventListener('click', () => {
+  document.getElementById('ing-input').value = DEMO;
+  analyze(DEMO);
+});
+
+// ── RENDER RESULTS ─────────────────────────────────────────────────────────
+function pillClass(s) { return {positive:'p-positive',caution:'p-caution',flag:'p-flag',neutral:'p-neutral',safe:'p-safe'}[s]||'p-neutral'; }
+function pillLabel(s) { return {positive:'works for you',caution:'heads up',flag:'worth noting',neutral:'neutral',safe:'generally safe'}[s]||'neutral'; }
+function noteClass(s) { return {flag:'note-flag',positive:'note-positive',caution:'note-caution'}[s]||'note-caution'; }
+
+function makeCard(ing, id) {
+  const div = document.createElement('div');
+  div.className = ing.personal_status==='flag' ? 'card is-flag' : ing.personal_status==='positive' ? 'card is-positive' : 'card';
+  div.innerHTML = `
+    <div class="card-head" onclick="toggle('${id}')">
+      <div class="card-name">${ing.name}${ing.plain_name && ing.plain_name.toLowerCase()!==ing.name.toLowerCase() ? ` <span class="card-plain">· ${ing.plain_name}</span>` : ''}</div>
+      <span class="pill ${pillClass(ing.personal_status)}">${pillLabel(ing.personal_status)}</span>
+      <i class="ti ti-chevron-down chev" id="chev-${id}"></i>
+    </div>
+    <div class="card-body" id="body-${id}">
+      <div class="card-desc">${ing.explanation}</div>
+      <div class="card-role">Role: ${ing.role}</div>
+      ${ing.personal_note ? `<div class="card-note ${noteClass(ing.personal_status)}"><i class="ti ti-user" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>${ing.personal_note}</div>` : ''}
+    </div>`;
+  return div;
+}
+
+function toggle(id) {
+  document.getElementById('body-'+id).classList.toggle('open');
+  document.getElementById('chev-'+id).classList.toggle('open');
+}
+
+function renderResults(data) {
+  currentResults = data;
+  currentScanSaved = false;
+  currentScanName = 'Scan — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+
+  const ingredients = data.ingredients || [];
+  const flagged = ingredients.filter(i => i.section === 'flagged');
+  const other = ingredients.filter(i => i.section !== 'flagged');
+
+  document.getElementById('r-name').textContent = currentScanName;
+  document.getElementById('r-meta').textContent = ingredients.length + ' ingredients analyzed';
+  document.getElementById('r-total').textContent = ingredients.length;
+  document.getElementById('r-pos').textContent = ingredients.filter(i => i.personal_status==='positive').length;
+  document.getElementById('r-caut').textContent = ingredients.filter(i => i.personal_status==='caution').length;
+  document.getElementById('r-flag').textContent = ingredients.filter(i => i.personal_status==='flag').length;
+
+  const flagEl = document.getElementById('flagged-cards');
+  const otherEl = document.getElementById('other-cards');
+  flagEl.innerHTML = ''; otherEl.innerHTML = '';
+
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.classList.remove('saved');
+  saveBtn.innerHTML = '<i class="ti ti-bookmark" style="font-size:13px"></i> Save scan';
+  document.getElementById('rename-wrap').classList.remove('show');
+  document.getElementById('toast-save').classList.remove('show');
+  document.getElementById('toast-copy').classList.remove('show');
+
+  if (flagged.length) {
+    document.getElementById('flagged-section').style.display = 'block';
+    document.getElementById('other-label').textContent = 'Everything else';
+    flagged.forEach((ing, i) => flagEl.appendChild(makeCard(ing, 'f'+i)));
+  } else {
+    document.getElementById('flagged-section').style.display = 'none';
+    document.getElementById('other-label').textContent = 'All ingredients';
+  }
+  other.forEach((ing, i) => otherEl.appendChild(makeCard(ing, 'o'+i)));
+
+  setScreen('s-results');
+}
+
+// ── SAVE ───────────────────────────────────────────────────────────────────
+document.getElementById('save-btn').addEventListener('click', () => {
+  if (currentScanSaved || !currentResults) return;
+  currentScanSaved = true;
+  const scan = {
+    id: Date.now(),
+    name: currentScanName,
+    date: new Date().toISOString(),
+    total: currentResults.ingredients.length,
+    flags: currentResults.ingredients.filter(i => i.personal_status==='flag').length,
+    data: currentResults
+  };
+  savedScans.unshift(scan);
+  localStorage.setItem('scout_scans', JSON.stringify(savedScans));
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.classList.add('saved');
+  saveBtn.innerHTML = '<i class="ti ti-bookmark" style="font-size:13px"></i> Saved';
+  document.getElementById('rename-wrap').classList.add('show');
+  document.getElementById('rename-input').value = currentScanName;
+  document.getElementById('rename-input').focus();
+  showToast('toast-save', 'Saved as "' + currentScanName + '"');
+});
+
+document.getElementById('rename-save-btn').addEventListener('click', () => {
+  const newName = document.getElementById('rename-input').value.trim();
+  if (!newName) return;
+  currentScanName = newName;
+  if (savedScans.length) { savedScans[0].name = newName; localStorage.setItem('scout_scans', JSON.stringify(savedScans)); }
+  document.getElementById('r-name').textContent = newName;
+  document.getElementById('rename-wrap').classList.remove('show');
+  showToast('toast-save', 'Renamed to "' + newName + '"');
+});
+
+// ── SHARE ──────────────────────────────────────────────────────────────────
+document.getElementById('share-btn').addEventListener('click', () => {
+  if (!currentResults) return;
+  const flags = currentResults.ingredients.filter(i => i.personal_status==='flag');
+  const text = `Scout breakdown: ${currentScanName}\n${currentResults.ingredients.length} ingredients · ${flags.length} worth noting${flags.length ? ' (' + flags.map(f=>f.name).join(', ') + ')' : ''}\nAnalyzed for: ${profile ? profile.cares.join(', ') : 'general'}`;
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showToast('toast-copy', null));
+  else showToast('toast-copy', null);
+});
+
+// ── HISTORY ────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!savedScans.length) {
+    el.innerHTML = `<div class="empty-state"><i class="ti ti-bookmark"></i><p>No saved scans yet.<br>Analyze an ingredient list and tap "Save scan" to keep it here.</p></div>`;
+    return;
+  }
+  el.innerHTML = '';
+  savedScans.forEach((scan, idx) => {
+    const row = document.createElement('div');
+    row.className = 'scan-row';
+    const d = new Date(scan.date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    row.innerHTML = `
+      <div class="scan-row-body">
+        <div class="scan-row-name">${scan.name}</div>
+        <div class="scan-row-meta">
+          <span>${d}</span><span>${scan.total} ingredients</span>
+          ${scan.flags ? `<span class="scan-flag-badge">${scan.flags} worth noting</span>` : ''}
+        </div>
+      </div>
+      <button class="scan-del" onclick="deleteScan(${idx},event)"><i class="ti ti-trash" style="font-size:14px"></i></button>`;
+    row.addEventListener('click', () => { renderResults(scan.data); });
+    el.appendChild(row);
+  });
+}
+
+function deleteScan(idx, e) {
+  e.stopPropagation();
+  savedScans.splice(idx, 1);
+  localStorage.setItem('scout_scans', JSON.stringify(savedScans));
+  renderHistory();
+}
+
+document.getElementById('go-history').addEventListener('click', () => { renderHistory(); setScreen('s-history'); });
+document.getElementById('history-back-btn').addEventListener('click', () => setScreen('s-input'));
+
+// ── NAV ────────────────────────────────────────────────────────────────────
+document.getElementById('back-btn').addEventListener('click', () => setScreen('s-input'));
+document.getElementById('new-scan-btn').addEventListener('click', () => { document.getElementById('ing-input').value = ''; setScreen('s-input'); });
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+function showToast(id, msg) {
+  const el = document.getElementById(id);
+  if (msg) { const sp = el.querySelector('span'); if (sp) sp.textContent = msg; }
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── START ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
