@@ -172,7 +172,16 @@
     .stat-n { font-size: 20px; font-weight: 600; }
     .stat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 
-    .section-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; }
+    .section-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; display: flex; align-items: center; gap: 5px; }
+    .section-label-positive { color: var(--green-text); }
+    .section-label-flag { color: var(--red-text); }
+    .section-label-caution { color: #854F0B; }
+    .section-label-neutral { color: var(--text-tertiary); }
+
+    .stat-positive .stat-n { color: var(--green-text); }
+    .stat-flag .stat-n { color: var(--red-text); }
+    .stat-caution .stat-n { color: #854F0B; }
+    .stat-neutral .stat-n { color: var(--text-secondary); }
 
     /* CARDS */
     .card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: 8px; overflow: hidden; }
@@ -235,10 +244,37 @@
 <body>
 <div class="wrap">
 
-  <!-- ONBOARDING: SCREEN 1 — WHAT DO YOU CARE ABOUT -->
-  <div class="screen active" id="s-ob1">
+  <!-- ONBOARDING: SCREEN 1 — DIET TYPE -->
+  <div class="screen active" id="s-ob0">
     <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
     <div class="ob-progress">
+      <div class="ob-dot done"></div>
+      <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
+    </div>
+    <div class="ob-headline">How would you describe how you eat?</div>
+    <div class="ob-sub">Pick the closest match. This helps Scout understand the basics before we get more specific.</div>
+    <div class="ob-tiles" id="diet-tiles">
+      <div class="ob-tile" data-val="omnivore">Omnivore</div>
+      <div class="ob-tile" data-val="vegetarian">Vegetarian</div>
+      <div class="ob-tile" data-val="vegan">Vegan</div>
+      <div class="ob-tile" data-val="low-carb / keto">Low-carb / Keto</div>
+      <div class="ob-tile" data-val="mediterranean">Mediterranean</div>
+      <div class="ob-tile" data-val="GLP-1 / weight management">GLP-1 / weight management</div>
+      <div class="ob-tile" data-val="gluten-free">Gluten-free</div>
+      <div class="ob-tile" data-val="not applicable">Not applicable</div>
+    </div>
+    <div class="ob-actions">
+      <button class="btn-primary" id="ob0-next">Next</button>
+    </div>
+  </div>
+
+  <!-- ONBOARDING: SCREEN 2 — WHAT DO YOU CARE ABOUT -->
+  <div class="screen" id="s-ob1">
+    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="ob-progress">
+      <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot"></div>
       <div class="ob-dot"></div>
@@ -246,13 +282,15 @@
     <div class="ob-headline">What do you care about when it comes to food?</div>
     <div class="ob-sub">Pick everything that feels true. This helps Scout highlight what matters most to you — nothing more.</div>
     <div class="ob-tiles" id="care-tiles">
-      <div class="ob-tile" data-val="blood sugar">Blood sugar</div>
+      <div class="ob-tile" data-val="blood sugar / diabetes">Blood sugar / diabetes</div>
       <div class="ob-tile" data-val="weight loss">Weight loss</div>
-      <div class="ob-tile" data-val="muscle &amp; protein">Muscle &amp; protein</div>
-      <div class="ob-tile" data-val="gut health">Gut health</div>
+      <div class="ob-tile" data-val="muscle &amp; protein / bulking">Muscle &amp; protein / bulking</div>
       <div class="ob-tile" data-val="heart health">Heart health</div>
+      <div class="ob-tile" data-val="gut health / digestion">Gut health / digestion</div>
+      <div class="ob-tile" data-val="energy &amp; focus">Energy &amp; focus</div>
+      <div class="ob-tile" data-val="inflammation">Inflammation</div>
+      <div class="ob-tile" data-val="longevity / healthy aging">Longevity / healthy aging</div>
       <div class="ob-tile" data-val="clean ingredients">Clean ingredients</div>
-      <div class="ob-tile" data-val="environmental impact">Environmental impact</div>
       <div class="ob-tile" data-val="just curious">Just curious</div>
     </div>
     <div class="ob-actions">
@@ -260,10 +298,11 @@
     </div>
   </div>
 
-  <!-- ONBOARDING: SCREEN 2 — ANYTHING TO AVOID -->
+  <!-- ONBOARDING: SCREEN 3 — ANYTHING TO AVOID -->
   <div class="screen" id="s-ob2">
     <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
     <div class="ob-progress">
+      <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot"></div>
@@ -274,15 +313,17 @@
       <div class="ob-tile" data-val="gluten">Gluten</div>
       <div class="ob-tile" data-val="dairy">Dairy</div>
       <div class="ob-tile" data-val="soy">Soy</div>
+      <div class="ob-tile" data-val="eggs">Eggs</div>
       <div class="ob-tile" data-val="tree nuts">Tree nuts</div>
-      <div class="ob-tile" data-val="seed oils">Seed oils</div>
+      <div class="ob-tile" data-val="peanuts">Peanuts</div>
+      <div class="ob-tile" data-val="shellfish">Shellfish</div>
       <div class="ob-tile" data-val="added sugar">Added sugar</div>
+      <div class="ob-tile" data-val="high fructose corn syrup">High fructose corn syrup</div>
       <div class="ob-tile" data-val="artificial sweeteners">Artificial sweeteners</div>
       <div class="ob-tile" data-val="artificial dyes">Artificial dyes</div>
+      <div class="ob-tile" data-val="seed oils">Seed oils</div>
       <div class="ob-tile" data-val="palm oil">Palm oil</div>
-      <div class="ob-tile" data-val="high fructose corn syrup">High fructose corn syrup</div>
       <div class="ob-tile" data-val="gums &amp; thickeners">Gums &amp; thickeners</div>
-      <div class="ob-tile" data-val="natural flavors">Natural flavors</div>
     </div>
     <div class="ob-actions">
       <button class="btn-primary" id="ob2-next">Next</button>
@@ -290,10 +331,11 @@
     </div>
   </div>
 
-  <!-- ONBOARDING: SCREEN 3 — SUMMARY -->
+  <!-- ONBOARDING: SCREEN 4 — SUMMARY -->
   <div class="screen" id="s-ob3">
     <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
     <div class="ob-progress">
+      <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
@@ -301,6 +343,10 @@
     <div class="ob-ready-icon"><i class="ti ti-check" style="font-size:20px;color:#854F0B"></i></div>
     <div class="ob-headline">You're all set.</div>
     <div class="ob-sub">Here's what Scout will keep in mind. You can always update this later.</div>
+    <div class="ob-summary-card">
+      <div class="ob-summary-label">How you eat</div>
+      <div class="ob-summary-tags" id="summary-diet"></div>
+    </div>
     <div class="ob-summary-card">
       <div class="ob-summary-label">I care about</div>
       <div class="ob-summary-tags" id="summary-care"></div>
@@ -325,7 +371,7 @@
       <i class="ti ti-bulb banner-icon"></i>
       <div class="banner-body">
         <div class="banner-title">How Scout works</div>
-        <div class="banner-text">Paste any food label's ingredient list and Scout will break down what each ingredient actually is — in plain English, filtered through your goals. No scores. No verdicts. Just clarity.</div>
+        <div class="banner-text">Type or paste any food label's ingredient list and Scout will break down what each ingredient actually is — in plain English, filtered through your goals. No scores. No verdicts. Just clarity. <strong>Longer ingredient lists can take a bit more time to analyze</strong> — hang tight while Scout works through them.</div>
         <button class="banner-dismiss" id="banner-dismiss">Got it — don't show this again</button>
       </div>
       <button class="banner-close" id="banner-close"><i class="ti ti-x" style="font-size:14px"></i></button>
@@ -354,7 +400,7 @@
     <div class="load-wrap">
       <i class="ti ti-loader load-icon"></i>
       <div class="load-title">Reading the label...</div>
-      <div class="load-sub">Breaking down each ingredient for your goals</div>
+      <div class="load-sub" id="load-sub">Breaking down each ingredient for your goals</div>
       <div class="load-steps">
         <div class="load-step" id="ls1"><i class="ti ti-circle"></i> Identifying ingredients</div>
         <div class="load-step" id="ls2"><i class="ti ti-circle"></i> Looking each one up</div>
@@ -384,17 +430,28 @@
 
     <div class="summary">
       <div class="stat"><div class="stat-n" id="r-total">—</div><div class="stat-l">total</div></div>
-      <div class="stat"><div class="stat-n" id="r-pos" style="color:var(--green-text)">—</div><div class="stat-l">works for you</div></div>
-      <div class="stat"><div class="stat-n" id="r-caut" style="color:#854F0B">—</div><div class="stat-l">heads up</div></div>
-      <div class="stat"><div class="stat-n" id="r-flag" style="color:var(--red-text)">—</div><div class="stat-l">worth noting</div></div>
+      <div class="stat stat-positive"><div class="stat-n" id="r-pos">—</div><div class="stat-l">works for you</div></div>
+      <div class="stat stat-neutral"><div class="stat-n" id="r-neutral">—</div><div class="stat-l">neutral</div></div>
+      <div class="stat stat-caution"><div class="stat-n" id="r-caut">—</div><div class="stat-l">heads up</div></div>
+      <div class="stat stat-flag"><div class="stat-n" id="r-flag">—</div><div class="stat-l">worth noting</div></div>
     </div>
 
+    <div id="positive-section" style="display:none">
+      <div class="section-label section-label-positive"><i class="ti ti-circle-check" style="font-size:13px"></i> Works for you</div>
+      <div id="positive-cards"></div>
+    </div>
     <div id="flagged-section" style="display:none">
-      <div class="section-label">Worth noting for you</div>
+      <div class="section-label section-label-flag"><i class="ti ti-alert-circle" style="font-size:13px"></i> Worth noting</div>
       <div id="flagged-cards"></div>
     </div>
-    <div class="section-label" id="other-label">All ingredients</div>
-    <div id="other-cards"></div>
+    <div id="caution-section" style="display:none">
+      <div class="section-label section-label-caution"><i class="ti ti-info-circle" style="font-size:13px"></i> Heads up</div>
+      <div id="caution-cards"></div>
+    </div>
+    <div id="neutral-section" style="display:none">
+      <div class="section-label section-label-neutral"><i class="ti ti-minus" style="font-size:13px"></i> Neutral</div>
+      <div id="neutral-cards"></div>
+    </div>
 
     <div class="action-bar">
       <button class="btn-action" id="save-btn"><i class="ti ti-bookmark" style="font-size:13px"></i> Save scan</button>
@@ -444,7 +501,7 @@ function setScreen(id) {
 function init() {
   if (bannerDismissed) document.getElementById('welcome-banner').classList.add('hidden');
   if (!profile) {
-    setScreen('s-ob1');
+    setScreen('s-ob0');
   } else {
     renderProfileBars();
     setScreen('s-input');
@@ -452,8 +509,17 @@ function init() {
 }
 
 // ── ONBOARDING ─────────────────────────────────────────────────────────────
+let dietSelected = null;
 let careSelected = [];
 let avoidSelected = [];
+
+document.querySelectorAll('#diet-tiles .ob-tile').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#diet-tiles .ob-tile').forEach(o => o.classList.remove('sel-care'));
+    t.classList.add('sel-care');
+    dietSelected = t.dataset.val;
+  });
+});
 
 document.querySelectorAll('#care-tiles .ob-tile').forEach(t => {
   t.addEventListener('click', () => {
@@ -471,11 +537,16 @@ document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
   });
 });
 
+document.getElementById('ob0-next').addEventListener('click', () => setScreen('s-ob1'));
 document.getElementById('ob1-next').addEventListener('click', () => setScreen('s-ob2'));
 
 function showSummary() {
+  const dietEl = document.getElementById('summary-diet');
   const careEl = document.getElementById('summary-care');
   const avoidEl = document.getElementById('summary-avoid');
+  dietEl.innerHTML = dietSelected
+    ? `<span class="ob-tag-care">${dietSelected}</span>`
+    : '<span class="ob-tag-none">Nothing selected</span>';
   careEl.innerHTML = careSelected.length
     ? careSelected.map(v => `<span class="ob-tag-care">${v}</span>`).join('')
     : '<span class="ob-tag-none">Nothing selected</span>';
@@ -489,28 +560,33 @@ document.getElementById('ob2-next').addEventListener('click', showSummary);
 document.getElementById('ob2-skip').addEventListener('click', showSummary);
 
 document.getElementById('ob3-done').addEventListener('click', () => {
-  profile = { cares: careSelected, avoids: avoidSelected };
+  profile = { diet: dietSelected, cares: careSelected, avoids: avoidSelected };
   localStorage.setItem('scout_profile', JSON.stringify(profile));
   renderProfileBars();
   setScreen('s-input');
 });
 
 document.getElementById('edit-profile-btn').addEventListener('click', () => {
+  dietSelected = profile ? profile.diet : null;
   careSelected = profile ? [...profile.cares] : [];
   avoidSelected = profile ? [...profile.avoids] : [];
+  document.querySelectorAll('#diet-tiles .ob-tile').forEach(t => {
+    t.classList.toggle('sel-care', dietSelected === t.dataset.val);
+  });
   document.querySelectorAll('#care-tiles .ob-tile').forEach(t => {
     t.classList.toggle('sel-care', careSelected.includes(t.dataset.val));
   });
   document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
     t.classList.toggle('sel-avoid', avoidSelected.includes(t.dataset.val));
   });
-  setScreen('s-ob1');
+  setScreen('s-ob0');
 });
 
 // ── PROFILE BARS ───────────────────────────────────────────────────────────
 function renderProfileBars() {
   if (!profile) return;
   const tags = [
+    profile.diet ? `<span class="ptag">${profile.diet}</span>` : '',
     ...profile.cares.map(c => `<span class="ptag">${c}</span>`),
     ...profile.avoids.map(a => `<span class="ptag-avoid">no ${a}</span>`)
   ].join('');
@@ -550,7 +626,13 @@ async function analyze(text) {
   setScreen('s-loading');
   document.getElementById('toast-error').classList.remove('show');
 
-  const goals = profile ? profile.cares.join(', ') : '';
+  const loadSub = document.getElementById('load-sub');
+  loadSub.textContent = text.length > 400
+    ? "That's a long list — this may take a bit longer than usual"
+    : "Breaking down each ingredient for your goals";
+
+  const dietPart = profile && profile.diet && profile.diet !== 'not applicable' ? profile.diet + ' diet, ' : '';
+  const goals = dietPart + (profile ? profile.cares.join(', ') : '');
   const avoids = profile ? profile.avoids.join(', ') : '';
 
   let apiDone = false;
@@ -627,19 +709,24 @@ function renderResults(data) {
   currentScanName = 'Scan — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 
   const ingredients = data.ingredients || [];
-  const flagged = ingredients.filter(i => i.section === 'flagged');
-  const other = ingredients.filter(i => i.section !== 'flagged');
+  const positive = ingredients.filter(i => i.personal_status === 'positive');
+  const flagged = ingredients.filter(i => i.personal_status === 'flag');
+  const caution = ingredients.filter(i => i.personal_status === 'caution');
+  const neutral = ingredients.filter(i => i.personal_status === 'neutral' || i.personal_status === 'safe');
 
   document.getElementById('r-name').textContent = currentScanName;
   document.getElementById('r-meta').textContent = ingredients.length + ' ingredients analyzed';
   document.getElementById('r-total').textContent = ingredients.length;
-  document.getElementById('r-pos').textContent = ingredients.filter(i => i.personal_status==='positive').length;
-  document.getElementById('r-caut').textContent = ingredients.filter(i => i.personal_status==='caution').length;
-  document.getElementById('r-flag').textContent = ingredients.filter(i => i.personal_status==='flag').length;
+  document.getElementById('r-pos').textContent = positive.length;
+  document.getElementById('r-neutral').textContent = neutral.length;
+  document.getElementById('r-caut').textContent = caution.length;
+  document.getElementById('r-flag').textContent = flagged.length;
 
+  const posEl = document.getElementById('positive-cards');
   const flagEl = document.getElementById('flagged-cards');
-  const otherEl = document.getElementById('other-cards');
-  flagEl.innerHTML = ''; otherEl.innerHTML = '';
+  const cautEl = document.getElementById('caution-cards');
+  const neutEl = document.getElementById('neutral-cards');
+  posEl.innerHTML = ''; flagEl.innerHTML = ''; cautEl.innerHTML = ''; neutEl.innerHTML = '';
 
   const saveBtn = document.getElementById('save-btn');
   saveBtn.classList.remove('saved');
@@ -648,15 +735,15 @@ function renderResults(data) {
   document.getElementById('toast-save').classList.remove('show');
   document.getElementById('toast-copy').classList.remove('show');
 
-  if (flagged.length) {
-    document.getElementById('flagged-section').style.display = 'block';
-    document.getElementById('other-label').textContent = 'Everything else';
-    flagged.forEach((ing, i) => flagEl.appendChild(makeCard(ing, 'f'+i)));
-  } else {
-    document.getElementById('flagged-section').style.display = 'none';
-    document.getElementById('other-label').textContent = 'All ingredients';
-  }
-  other.forEach((ing, i) => otherEl.appendChild(makeCard(ing, 'o'+i)));
+  document.getElementById('flagged-section').style.display = flagged.length ? 'block' : 'none';
+  document.getElementById('positive-section').style.display = positive.length ? 'block' : 'none';
+  document.getElementById('caution-section').style.display = caution.length ? 'block' : 'none';
+  document.getElementById('neutral-section').style.display = neutral.length ? 'block' : 'none';
+
+  flagged.forEach((ing, i) => flagEl.appendChild(makeCard(ing, 'f'+i)));
+  positive.forEach((ing, i) => posEl.appendChild(makeCard(ing, 'p'+i)));
+  caution.forEach((ing, i) => cautEl.appendChild(makeCard(ing, 'c'+i)));
+  neutral.forEach((ing, i) => neutEl.appendChild(makeCard(ing, 'n'+i)));
 
   setScreen('s-results');
 }
