@@ -18,19 +18,9 @@ exports.handler = async function (event) {
     .replace(/\s+/g, " ")
     .trim();
 
-  const system = `You are a food science explainer for Scout. The user will provide a food ingredient list and their personal health profile. Return ONLY a raw JSON object with no markdown, no backticks, no preamble. Structure:
-{"ingredients":[{"name":"ingredient name as written","plain_name":"common name","role":"function in food, 3-5 words","explanation":"1-2 plain English sentences","personal_status":"positive|caution|flag|neutral","personal_note":"short note relevant to their goals, or null","section":"flagged|other"}]}
-
-Status rules:
-- positive: works toward their stated goals
-- flag: conflicts with their avoid list or goals  
-- caution: worth being aware of
-- neutral: unremarkable
-
-Section is "flagged" if personal_status is "flag", otherwise "other".
-Keep parent ingredients whole — do not split sub-ingredients in parentheses into separate entries.
-Ignore label phrases like "contains 2% or less of" — treat what follows as regular ingredients.
-Return only the JSON object, nothing else.`;
+  const system = `Food ingredient explainer. Output ONLY raw JSON, no markdown/backticks/preamble.
+{"ingredients":[{"name":"as written","plain_name":"common name","role":"3-5 word function","explanation":"1 short plain-English sentence","personal_status":"positive|caution|flag|neutral","personal_note":"short note or null","section":"flagged|other"}]}
+positive=helps their goals, flag=conflicts with avoid list/goals, caution=worth knowing, neutral=unremarkable. section="flagged" only if personal_status="flag", else "other". Keep parent ingredients whole, don't split parenthetical sub-ingredients. Ignore "contains 2% or less of" phrasing. Be concise. JSON only.`;
 
   const userMessage = `Here is the ingredient list: ${cleaned}
 
@@ -47,7 +37,7 @@ I am avoiding: ${avoids || "nothing specific"}.`;
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 4000,
+        max_tokens: 2500,
         system,
         messages: [{ role: "user", content: userMessage }],
       }),
