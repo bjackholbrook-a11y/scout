@@ -11,10 +11,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --amber: #BA7517;
-      --amber-dark: #854F0B;
-      --amber-bg: #FAEEDA;
-      --amber-border: #FAC775;
+      --sky: #5BAADB;
+      --sky-dark: #3a8ab8;
+      --sky-light: #EEF6FC;
+      --sky-tint: #D4EDFB;
+      --melon: #C0394F;
+      --melon-dark: #8f2238;
+      --melon-bg: #FADADF;
+      --melon-border: #E8909E;
       --green-bg: #E1F5EE;
       --green-text: #085041;
       --green-border: #5DCAA5;
@@ -22,13 +26,15 @@
       --red-text: #A32D2D;
       --red-border: #F09595;
       --red-dark: #791F1F;
+      --caution-bg: #FAEEDA;
       --caution-text: #633806;
+      --caution-border: #FAC775;
       --text-primary: #1A1A18;
       --text-secondary: #555550;
       --text-tertiary: #888780;
-      --border: #E2E1DC;
-      --border-light: #EEEDE8;
-      --bg: #F7F5F0;
+      --border: #D8E8F0;
+      --border-light: #E4F0F7;
+      --bg: #EEF6FC;
       --bg-card: #FFFFFF;
       --radius-sm: 6px;
       --radius-md: 10px;
@@ -40,13 +46,23 @@
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100vh;
-      padding: 0 16px 48px;
+      padding: 0;
     }
 
     .wrap {
       max-width: 600px;
       margin: 0 auto;
-      padding-top: 32px;
+      padding: 0 0 48px;
+    }
+
+    .page-header {
+      background: var(--sky);
+      padding: 24px 20px 20px;
+      margin-bottom: 24px;
+    }
+
+    .page-body {
+      padding: 0 16px;
     }
 
     /* SCREENS */
@@ -54,14 +70,13 @@
     .screen.active { display: block; }
 
     /* LOGO */
-    .logo { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 2px; }
-    .logo span { color: var(--amber); }
-    .logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .logo { font-size: 28px; font-weight: 700; color: white; letter-spacing: -0.5px; text-shadow: 2px 2px 0px var(--melon), 3px 3px 0px var(--melon); font-family: Georgia, serif; }
+    .logo-row { display: flex; align-items: center; justify-content: space-between; }
 
     /* ONBOARDING */
     .ob-progress { display: flex; gap: 5px; margin-bottom: 24px; }
     .ob-dot { height: 3px; border-radius: 2px; flex: 1; background: var(--border); transition: background 0.2s; }
-    .ob-dot.done { background: var(--amber); }
+    .ob-dot.done { background: var(--melon); }
     .ob-headline { font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 1.3; margin-bottom: 8px; }
     .ob-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
     .ob-tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
@@ -72,7 +87,7 @@
       transition: all 0.15s; background: var(--bg-card);
     }
     .ob-tile:hover { background: var(--bg); }
-    .ob-tile.sel-care { background: var(--amber-bg); border-color: var(--amber-border); color: var(--caution-text); font-weight: 500; }
+    .ob-tile.sel-care { background: var(--sky-tint); border-color: var(--sky-dark); color: #1a3a4a; font-weight: 500; }
     .ob-tile.sel-avoid { background: var(--red-bg); border-color: var(--red-border); color: var(--red-dark); font-weight: 500; }
     .ob-actions { display: flex; align-items: center; gap: 12px; }
 
@@ -80,18 +95,18 @@
     .ob-summary-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
     .ob-summary-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
     .ob-summary-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .ob-tag-care { font-size: 12px; padding: 3px 9px; border-radius: 20px; background: var(--amber-bg); color: var(--caution-text); }
+    .ob-tag-care { font-size: 12px; padding: 3px 9px; border-radius: 20px; background: var(--sky-tint); color: #1a3a4a; }
     .ob-tag-avoid { font-size: 12px; padding: 3px 9px; border-radius: 20px; background: var(--red-bg); color: var(--red-dark); }
     .ob-tag-none { font-size: 13px; color: var(--text-tertiary); font-style: italic; }
-    .ob-ready-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--amber-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .ob-ready-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--sky-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
 
     /* BUTTONS */
     .btn-primary {
       font-size: 14px; padding: 10px 22px; border-radius: var(--radius-md);
-      cursor: pointer; font-family: inherit; background: var(--amber);
+      cursor: pointer; font-family: inherit; background: var(--melon);
       border: none; color: #fff; font-weight: 500; transition: background 0.15s;
     }
-    .btn-primary:hover { background: var(--amber-dark); }
+    .btn-primary:hover { background: var(--melon-dark); }
     .btn-ghost {
       font-size: 13px; color: var(--text-tertiary); background: none;
       border: none; cursor: pointer; font-family: inherit; padding: 0;
@@ -120,25 +135,27 @@
       margin-bottom: 20px;
     }
     .pb-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .ptag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--amber-bg); color: var(--caution-text); }
+    .ptag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--sky-tint); color: #1a3a4a; }
     .ptag-avoid { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--red-bg); color: var(--red-dark); }
+    .on-blue .ptag { background: rgba(255,255,255,0.2); color: white; }
+    .on-blue .ptag-avoid { background: rgba(192,57,79,0.3); color: white; }
     .pb-edit { font-size: 11px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; margin-left: auto; font-family: inherit; }
     .pb-edit:hover { color: var(--text-secondary); }
 
     /* BANNER */
     .banner {
-      border: 1px solid var(--amber-border); background: var(--amber-bg);
+      border: 1px solid var(--sky-dark); background: var(--sky-tint);
       border-radius: var(--radius-lg); padding: 12px 14px;
       margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;
     }
     .banner.hidden { display: none; }
-    .banner-icon { font-size: 18px; color: var(--amber-dark); flex-shrink: 0; margin-top: 1px; }
+    .banner-icon { font-size: 18px; color: var(--melon-dark); flex-shrink: 0; margin-top: 1px; }
     .banner-body { flex: 1; }
-    .banner-title { font-size: 13px; font-weight: 500; color: #412402; margin-bottom: 3px; }
-    .banner-text { font-size: 12px; color: var(--caution-text); line-height: 1.55; }
-    .banner-dismiss { font-size: 11px; color: var(--amber-dark); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; margin-top: 7px; display: block; }
+    .banner-title { font-size: 13px; font-weight: 500; color: #1a3a4a; margin-bottom: 3px; }
+    .banner-text { font-size: 12px; color: #1a3a4a; line-height: 1.55; }
+    .banner-dismiss { font-size: 11px; color: var(--melon-dark); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; margin-top: 7px; display: block; }
     .banner-dismiss:hover { text-decoration: underline; }
-    .banner-close { font-size: 16px; color: var(--amber-dark); background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+    .banner-close { font-size: 16px; color: var(--melon-dark); background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
 
     /* INPUT */
     .input-label { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
@@ -148,13 +165,13 @@
       padding: 12px 14px; color: var(--text-primary); background: var(--bg-card);
       border: 1px solid var(--border); outline: none; transition: border-color 0.15s;
     }
-    textarea:focus { border-color: var(--amber); }
+    textarea:focus { border-color: var(--melon); }
     .hint { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; margin-bottom: 16px; }
     .input-actions { display: flex; align-items: center; gap: 10px; }
 
     /* LOADING */
     .load-wrap { text-align: center; padding: 48px 0; }
-    .load-icon { font-size: 28px; color: var(--amber); margin-bottom: 16px; animation: spin 1.2s linear infinite; display: inline-block; }
+    .load-icon { font-size: 28px; color: var(--melon); margin-bottom: 16px; animation: spin 1.2s linear infinite; display: inline-block; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .load-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
     .load-sub { font-size: 13px; color: var(--text-secondary); }
@@ -167,7 +184,7 @@
     .results-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
     .results-meta { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
 
-    .summary { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .summary { display: flex; gap: 8px; margin-bottom: 20px; margin-top: 16px; flex-wrap: wrap; }
     .stat { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 10px 14px; flex: 1; min-width: 80px; }
     .stat-n { font-size: 20px; font-weight: 600; }
     .stat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
@@ -175,12 +192,12 @@
     .section-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; display: flex; align-items: center; gap: 5px; }
     .section-label-positive { color: var(--green-text); }
     .section-label-flag { color: var(--red-text); }
-    .section-label-caution { color: #854F0B; }
+    .section-label-caution { color: var(--melon-dark); }
     .section-label-neutral { color: var(--text-tertiary); }
 
     .stat-positive .stat-n { color: var(--green-text); }
     .stat-flag .stat-n { color: var(--red-text); }
-    .stat-caution .stat-n { color: #854F0B; }
+    .stat-caution .stat-n { color: var(--melon-dark); }
     .stat-neutral .stat-n { color: var(--text-secondary); }
 
     /* CARDS */
@@ -193,7 +210,7 @@
     .card-plain { font-size: 11px; color: var(--text-tertiary); font-weight: 400; }
     .pill { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
     .p-safe { background: #EAF3DE; color: #3B6D11; }
-    .p-caution { background: var(--amber-bg); color: #854F0B; }
+    .p-caution { background: var(--sky-tint); color: var(--melon-dark); }
     .p-flag { background: var(--red-bg); color: var(--red-text); }
     .p-neutral { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); }
     .p-positive { background: var(--green-bg); color: var(--green-text); }
@@ -206,7 +223,7 @@
     .card-note { font-size: 12px; margin-top: 8px; padding: 7px 10px; border-radius: var(--radius-sm); line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
     .note-flag { background: var(--red-bg); color: var(--red-dark); }
     .note-positive { background: var(--green-bg); color: var(--green-text); }
-    .note-caution { background: var(--amber-bg); color: var(--caution-text); }
+    .note-caution { background: var(--sky-tint); color: #1a3a4a; }
 
     /* ACTION BAR */
     .action-bar { display: flex; align-items: center; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); flex-wrap: wrap; }
@@ -215,13 +232,13 @@
     /* RENAME */
     .rename-wrap { display: none; align-items: center; gap: 8px; margin-top: 10px; }
     .rename-wrap.show { display: flex; }
-    .rename-input { flex: 1; font-size: 13px; font-family: inherit; border-radius: var(--radius-md); padding: 7px 10px; border: 1px solid var(--amber); color: var(--text-primary); background: var(--bg-card); outline: none; }
+    .rename-input { flex: 1; font-size: 13px; font-family: inherit; border-radius: var(--radius-md); padding: 7px 10px; border: 1px solid var(--melon); color: var(--text-primary); background: var(--bg-card); outline: none; }
 
     /* TOAST */
     .toast { display: none; align-items: center; gap: 6px; font-size: 12px; border-radius: var(--radius-md); padding: 7px 12px; margin-top: 8px; }
     .toast.show { display: flex; }
     .toast-save { color: var(--green-text); background: var(--green-bg); }
-    .toast-copy { color: var(--caution-text); background: var(--amber-bg); }
+    .toast-copy { color: #1a3a4a; background: var(--sky-tint); }
     .toast-error { color: var(--red-dark); background: var(--red-bg); }
 
     /* HISTORY */
@@ -237,8 +254,10 @@
     .scan-del { font-size: 15px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0; transition: color 0.15s; }
     .scan-del:hover { color: var(--red-text); }
 
-    .scans-btn { font-size: 12px; color: var(--text-tertiary); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
-    .scans-btn:hover { background: var(--bg); }
+    .scans-btn { font-size: 12px; color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); padding: 5px 10px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
+    .scans-btn:hover { background: rgba(255,255,255,0.25); }
+    .btn-sm { font-size: 12px; color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; padding: 5px 10px; }
+    .btn-sm:hover { background: rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
@@ -246,8 +265,11 @@
 
   <!-- ONBOARDING: SCREEN 1 — DIET TYPE -->
   <div class="screen active" id="s-ob0">
-    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
-    <div class="ob-progress">
+    <div class="page-header">
+      <div class="logo">Scout</div>
+    </div>
+    <div class="page-body">
+    <div class="ob-progress" style="margin-top:20px">
       <div class="ob-dot done"></div>
       <div class="ob-dot"></div>
       <div class="ob-dot"></div>
@@ -268,12 +290,14 @@
     <div class="ob-actions">
       <button class="btn-primary" id="ob0-next">Next</button>
     </div>
+    </div>
   </div>
 
   <!-- ONBOARDING: SCREEN 2 — WHAT DO YOU CARE ABOUT -->
   <div class="screen" id="s-ob1">
-    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
-    <div class="ob-progress">
+    <div class="page-header"><div class="logo">Scout</div></div>
+    <div class="page-body">
+    <div class="ob-progress" style="margin-top:20px">
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot"></div>
@@ -296,12 +320,14 @@
     <div class="ob-actions">
       <button class="btn-primary" id="ob1-next">Next</button>
     </div>
+    </div>
   </div>
 
   <!-- ONBOARDING: SCREEN 3 — ANYTHING TO AVOID -->
   <div class="screen" id="s-ob2">
-    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
-    <div class="ob-progress">
+    <div class="page-header"><div class="logo">Scout</div></div>
+    <div class="page-body">
+    <div class="ob-progress" style="margin-top:20px">
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
@@ -329,18 +355,20 @@
       <button class="btn-primary" id="ob2-next">Next</button>
       <button class="btn-ghost" id="ob2-skip">Skip</button>
     </div>
+    </div>
   </div>
 
   <!-- ONBOARDING: SCREEN 4 — SUMMARY -->
   <div class="screen" id="s-ob3">
-    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
-    <div class="ob-progress">
+    <div class="page-header"><div class="logo">Scout</div></div>
+    <div class="page-body">
+    <div class="ob-progress" style="margin-top:20px">
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
     </div>
-    <div class="ob-ready-icon"><i class="ti ti-check" style="font-size:20px;color:#854F0B"></i></div>
+    <div class="ob-ready-icon"><i class="ti ti-check" style="font-size:20px;color:var(--melon-dark)"></i></div>
     <div class="ob-headline">You're all set.</div>
     <div class="ob-sub">Here's what Scout will keep in mind. You can always update this later.</div>
     <div class="ob-summary-card">
@@ -358,14 +386,18 @@
     <div class="ob-actions" style="margin-top:20px">
       <button class="btn-primary" id="ob3-done">Start reading labels ↗</button>
     </div>
+    </div>
   </div>
 
   <!-- INPUT SCREEN -->
   <div class="screen" id="s-input">
-    <div class="logo-row">
-      <div class="logo">Sc<span>ou</span>t</div>
-      <button class="scans-btn" id="go-history"><i class="ti ti-bookmark" style="font-size:13px"></i> Saved</button>
+    <div class="page-header">
+      <div class="logo-row">
+        <div class="logo">Scout</div>
+        <button class="scans-btn" id="go-history"><i class="ti ti-bookmark" style="font-size:13px"></i> Saved</button>
+      </div>
     </div>
+    <div class="page-body">
 
     <div class="banner" id="welcome-banner">
       <i class="ti ti-bulb banner-icon"></i>
@@ -392,11 +424,15 @@
     </div>
 
     <div class="toast toast-error" id="toast-error"><i class="ti ti-alert-circle" style="font-size:14px"></i> <span id="error-msg">Something went wrong. Try again.</span></div>
+    </div>
   </div>
 
   <!-- LOADING SCREEN -->
   <div class="screen" id="s-loading">
-    <div class="logo" style="margin-bottom:24px">Sc<span>ou</span>t</div>
+    <div class="page-header">
+      <div class="logo">Scout</div>
+    </div>
+    <div class="page-body">
     <div class="load-wrap">
       <i class="ti ti-loader load-icon"></i>
       <div class="load-title">Reading the label...</div>
@@ -407,26 +443,28 @@
         <div class="load-step" id="ls3"><i class="ti ti-circle"></i> Matching to your profile</div>
       </div>
     </div>
+    </div>
   </div>
 
   <!-- RESULTS SCREEN -->
   <div class="screen" id="s-results">
-    <div class="logo-row">
-      <div class="logo">Sc<span>ou</span>t</div>
-      <button class="btn-sm" id="back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> New scan</button>
-    </div>
-
-    <div class="results-header">
-      <div>
-        <div class="results-title" id="r-name">Ingredient breakdown</div>
-        <div class="results-meta" id="r-meta"></div>
+    <div class="page-header">
+      <div class="logo-row">
+        <div class="logo">Scout</div>
+        <button class="btn-sm" id="back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> New scan</button>
+      </div>
+      <div class="results-header" style="margin-top:8px;">
+        <div>
+          <div class="results-title" id="r-name" style="color:white;font-size:15px;font-weight:600;">Ingredient breakdown</div>
+          <div class="results-meta" id="r-meta" style="color:rgba(255,255,255,0.7);"></div>
+        </div>
+      </div>
+      <div class="profile-bar on-blue" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.2);margin-top:10px;margin-bottom:0;">
+        <span class="pb-label" style="color:rgba(255,255,255,0.7);">Filtered for</span>
+        <span id="profile-tags-results"></span>
       </div>
     </div>
-
-    <div class="profile-bar">
-      <span class="pb-label">Filtered for</span>
-      <span id="profile-tags-results"></span>
-    </div>
+    <div class="page-body">
 
     <div class="summary">
       <div class="stat"><div class="stat-n" id="r-total">—</div><div class="stat-l">total</div></div>
@@ -465,16 +503,21 @@
     </div>
     <div class="toast toast-save" id="toast-save"><i class="ti ti-check" style="font-size:13px"></i> <span id="toast-save-msg">Saved!</span></div>
     <div class="toast toast-copy" id="toast-copy"><i class="ti ti-check" style="font-size:13px"></i> Summary copied to clipboard</div>
+    </div>
   </div>
 
   <!-- HISTORY SCREEN -->
   <div class="screen" id="s-history">
-    <div class="logo-row">
-      <div class="logo">Sc<span>ou</span>t</div>
-      <button class="btn-sm" id="history-back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> Back</button>
+    <div class="page-header">
+      <div class="logo-row">
+        <div class="logo">Scout</div>
+        <button class="btn-sm" id="history-back-btn"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-1px"></i> Back</button>
+      </div>
+      <div style="font-size:15px;font-weight:600;color:white;margin-top:8px;">Saved scans</div>
     </div>
-    <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:16px">Saved scans</div>
+    <div class="page-body">
     <div id="history-list"></div>
+    </div>
   </div>
 
 </div>
