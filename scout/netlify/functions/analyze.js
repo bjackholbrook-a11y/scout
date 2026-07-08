@@ -57,18 +57,10 @@ Avoiding: ${avoids || "nothing"}.${conditionsPart}`;
     }
 
     const text = data.content[0].text;
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}");
+    const parsed = extractJSON(text);
 
-    if (jsonStart === -1 || jsonEnd === -1) {
-      return { statusCode: 502, body: JSON.stringify({ error: "No JSON found in response" }) };
-    }
-
-    const jsonStr = text.substring(jsonStart, jsonEnd + 1);
-    const parsed = JSON.parse(jsonStr);
-
-    if (!parsed.ingredients || !Array.isArray(parsed.ingredients)) {
-      return { statusCode: 502, body: JSON.stringify({ error: "Invalid response structure" }) };
+    if (!parsed || !parsed.ingredients || !Array.isArray(parsed.ingredients)) {
+      return { statusCode: 502, body: JSON.stringify({ error: "Could not parse ingredient data" }) };
     }
 
     return {
@@ -83,6 +75,31 @@ Avoiding: ${avoids || "nothing"}.${conditionsPart}`;
     };
   }
 };
+
+function extractJSON(text) {
+  const jsonStart = text.indexOf("{");
+  const jsonEnd = text.lastIndexOf("}");
+  if (jsonStart === -1 || jsonEnd === -1) return null;
+
+  let jsonStr = text.substring(jsonStart, jsonEnd + 1);
+
+  // Try parsing as-is first
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    // Clean up common issues and retry
+    try {
+      jsonStr = jsonStr
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ') // control characters
+        .replace(/,\s*}/g, '}')                          // trailing commas in objects
+        .replace(/,\s*]/g, ']')                          // trailing commas in arrays
+        .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3'); // unquoted keys
+      return JSON.parse(jsonStr);
+    } catch (e2) {
+      return null;
+    }
+  }
+}
 
 function buildConditionGuidance(conditions) {
   const guides = {
