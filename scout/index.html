@@ -499,7 +499,24 @@
     <div class="input-label">Paste the ingredient list</div>
     <textarea id="ing-input" placeholder="e.g. Enriched Wheat Flour (wheat flour, niacin...), Sugar, Palm Oil, Salt..."></textarea>
     <div class="hint">Copy from any food label or nutrition website. Paste it exactly as written.</div>
-    <div class="input-actions">
+
+    <div class="input-divider"><span>or</span></div>
+
+    <div class="camera-btn-wrap">
+      <button class="btn-camera" id="camera-btn"><i class="ti ti-camera" style="font-size:15px"></i> Take a photo of the label</button>
+      <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" />
+    </div>
+
+    <div class="photo-preview-wrap" id="photo-preview-wrap" style="display:none">
+      <div class="photo-preview-header">
+        <span class="photo-preview-label">Label photo</span>
+        <button class="photo-retake-btn" id="photo-retake-btn"><i class="ti ti-refresh" style="font-size:13px"></i> Retake</button>
+      </div>
+      <img id="photo-preview-img" class="photo-preview-img" alt="Food label photo" />
+      <div class="photo-tip"><i class="ti ti-info-circle" style="font-size:13px"></i> Make sure the ingredient list is in focus and well-lit for best results.</div>
+    </div>
+
+    <div class="input-actions" style="margin-top:16px">
       <button class="btn-primary" id="analyze-btn">Analyze ↗</button>
       <button class="btn-ghost" id="demo-btn">Try an example</button>
     </div>
@@ -804,15 +821,68 @@ function animateSteps(cb) {
   setTimeout(cb, 2200);
 }
 
+// ── CAMERA ─────────────────────────────────────────────────────────────────
+let capturedImageBase64 = null;
+let capturedImageType = null;
+
+document.getElementById('camera-btn').addEventListener('click', () => {
+  document.getElementById('camera-input').click();
+});
+
+document.getElementById('camera-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const resized = await resizeImage(file, 1200);
+  capturedImageBase64 = resized.base64;
+  capturedImageType = resized.type;
+  const img = document.getElementById('photo-preview-img');
+  img.src = `data:${resized.type};base64,${resized.base64}`;
+  document.getElementById('photo-preview-wrap').style.display = 'block';
+  document.getElementById('ing-input').value = '';
+  e.target.value = '';
+});
+
+document.getElementById('photo-retake-btn').addEventListener('click', () => {
+  capturedImageBase64 = null;
+  capturedImageType = null;
+  document.getElementById('photo-preview-wrap').style.display = 'none';
+  document.getElementById('photo-preview-img').src = '';
+  document.getElementById('camera-input').click();
+});
+
+async function resizeImage(file, maxWidth) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        resolve({ base64: dataUrl.split(',')[1], type: 'image/jpeg' });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 // ── ANALYZE ────────────────────────────────────────────────────────────────
-async function analyze(text) {
+async function analyze(text, imageBase64, imageType) {
   setScreen('s-loading');
   document.getElementById('toast-error').classList.remove('show');
 
   const loadSub = document.getElementById('load-sub');
-  loadSub.textContent = text.length > 400
-    ? "That's a long list — this may take a bit longer than usual"
-    : "Breaking down each ingredient for your goals";
+  if (imageBase64) {
+    loadSub.textContent = "Reading the label photo...";
+  } else {
+    loadSub.textContent = text.length > 400
+      ? "That's a long list — this may take a bit longer than usual"
+      : "Breaking down each ingredient for your goals";
+  }
 
   const dietPart = profile && profile.diet && profile.diet !== 'not applicable' ? profile.diet + ' diet, ' : '';
   const goals = dietPart + (profile ? profile.cares.join(', ') : '');
@@ -830,10 +900,14 @@ async function analyze(text) {
   animateSteps(() => { animDone = true; tryRender(); });
 
   try {
+    const payload = imageBase64
+      ? { imageBase64, imageType, goals, avoids, conditions }
+      : { ingredients: text, goals, avoids, conditions };
+
     const res = await fetch('/.netlify/functions/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ingredients: text, goals, avoids, conditions })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -850,12 +924,21 @@ async function analyze(text) {
 }
 
 document.getElementById('analyze-btn').addEventListener('click', () => {
-  const text = document.getElementById('ing-input').value.trim();
-  if (!text) return;
-  analyze(text);
+  if (capturedImageBase64) {
+    analyze(null, capturedImageBase64, capturedImageType);
+    capturedImageBase64 = null;
+    capturedImageType = null;
+    document.getElementById('photo-preview-wrap').style.display = 'none';
+  } else {
+    const text = document.getElementById('ing-input').value.trim();
+    if (!text) return;
+    analyze(text);
+  }
 });
 
 document.getElementById('demo-btn').addEventListener('click', () => {
+  capturedImageBase64 = null;
+  document.getElementById('photo-preview-wrap').style.display = 'none';
   document.getElementById('ing-input').value = DEMO;
   analyze(DEMO);
 });
