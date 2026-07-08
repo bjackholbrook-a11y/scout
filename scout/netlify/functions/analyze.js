@@ -3,9 +3,9 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  let ingredients, goals, avoids;
+  let ingredients, goals, avoids, conditions;
   try {
-    ({ ingredients, goals, avoids } = JSON.parse(event.body));
+    ({ ingredients, goals, avoids, conditions } = JSON.parse(event.body));
   } catch (e) {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid request body" }) };
   }
@@ -18,14 +18,19 @@ exports.handler = async function (event) {
     .replace(/\s+/g, " ")
     .trim();
 
+  // Build condition-specific guidance
+  const conditionGuidance = conditions ? buildConditionGuidance(conditions) : '';
+
   const system = `Food ingredient explainer. Output ONLY raw JSON, no markdown/backticks/preamble.
 {"ingredients":[{"name":"as written","plain_name":"common name","role":"3-5 word function","explanation":"1 short plain-English sentence","personal_status":"positive|caution|flag|neutral","personal_note":"short note or null","section":"flagged|other"}]}
-positive=helps their goals, flag=conflicts with avoid list/goals, caution=worth knowing, neutral=unremarkable. section="flagged" only if personal_status="flag", else "other". Keep parent ingredients whole, don't split parenthetical sub-ingredients. Ignore "contains 2% or less of" phrasing. Be concise. JSON only.`;
+positive=helps their goals, flag=conflicts with avoid list/goals/medical conditions, caution=worth knowing, neutral=unremarkable. section="flagged" only if personal_status="flag", else "other". Keep parent ingredients whole, don't split parenthetical sub-ingredients. Ignore "contains 2% or less of" phrasing.${conditionGuidance} Be concise. JSON only.`;
+
+  const conditionsPart = conditions ? `\nI am managing these health conditions through diet: ${conditions}.` : '';
 
   const userMessage = `Here is the ingredient list: ${cleaned}
 
 My health goals: ${goals || "none specified"}.
-I am avoiding: ${avoids || "nothing specific"}.`;
+I am avoiding: ${avoids || "nothing specific"}.${conditionsPart}`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -81,3 +86,18 @@ I am avoiding: ${avoids || "nothing specific"}.`;
     };
   }
 };
+
+function buildConditionGuidance(conditions) {
+  const guides = {
+    'celiac disease': ' For celiac disease: flag ALL gluten sources including wheat, barley, rye, malt, wheat starch, modified food starch, and any derivatives. Also flag cross-contamination language.',
+    'ibs / fodmap sensitivity': ' For IBS/FODMAP: flag high-FODMAP ingredients including onion, garlic, fructose, lactose, sorbitol, mannitol, xylitol, inulin, chicory root, apple, pear, honey.',
+    'type 2 diabetes': ' For type 2 diabetes: flag added sugars, high-glycemic ingredients, refined flours, and sugar alcohols. Note fiber and protein positively.',
+    "crohn's disease / ibd": ' For Crohn's/IBD: flag high-fiber ingredients during flares, seed oils, artificial additives, and ingredients known to irritate the gut.',
+    'gerd / acid reflux': ' For GERD: flag citric acid, tomato, caffeine, chocolate, mint, onion, garlic, spicy ingredients, and high-fat components.',
+    'histamine intolerance': ' For histamine intolerance: flag fermented ingredients, vinegar, aged/cured products, artificial dyes, preservatives (especially sulfites, benzoates), and flavor enhancers.',
+    'kidney disease': ' For kidney disease: flag high-potassium ingredients (tomato, potato, banana derivatives), high-phosphorus additives (phosphates), and high-sodium content.',
+  };
+
+  const parts = conditions.toLowerCase().split(',').map(c => c.trim());
+  return parts.map(c => guides[c] || '').filter(Boolean).join('');
+}
