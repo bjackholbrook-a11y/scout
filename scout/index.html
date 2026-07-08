@@ -94,6 +94,8 @@
     .ob-tile.sel-avoid { background: var(--red-bg); border-color: var(--red-border); color: var(--red-dark); font-weight: 500; }
     .ob-actions { display: flex; align-items: center; gap: 12px; }
 
+    .medical-disclaimer { display: flex; align-items: flex-start; gap: 10px; background: #EEF6FC; border: 1.5px solid var(--sky); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 20px; font-size: 13px; color: #1a3a4a; line-height: 1.6; }
+
     /* SUMMARY SCREEN */
     .ob-summary-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
     .ob-summary-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
@@ -277,6 +279,7 @@
       <div class="ob-dot"></div>
       <div class="ob-dot"></div>
       <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
     </div>
     <div class="ob-headline">How would you describe how you eat?</div>
     <div class="ob-sub">Pick the closest match. This helps Scout understand the basics before we get more specific.</div>
@@ -303,6 +306,7 @@
     <div class="ob-progress" style="margin-top:20px">
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
+      <div class="ob-dot"></div>
       <div class="ob-dot"></div>
       <div class="ob-dot"></div>
     </div>
@@ -335,6 +339,7 @@
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
     </div>
     <div class="ob-headline">Anything you're avoiding?</div>
     <div class="ob-sub">Scout will always flag these for you. Skip this if nothing applies.</div>
@@ -361,11 +366,51 @@
     </div>
   </div>
 
-  <!-- ONBOARDING: SCREEN 4 — SUMMARY -->
+  <!-- ONBOARDING: SCREEN 4 — MEDICAL CONDITIONS -->
+  <div class="screen" id="s-ob4">
+    <div class="page-header"><div class="logo-block"><div class="logo">Scout</div><div class="logo-tagline">Fight Food Fear</div></div></div>
+    <div class="page-body">
+    <div class="ob-progress" style="margin-top:20px">
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+      <div class="ob-dot done"></div>
+      <div class="ob-dot"></div>
+    </div>
+    <div class="ob-headline">Managing a health condition through diet?</div>
+    <div class="ob-sub">Select any that apply. Scout will flag relevant ingredients more specifically for your condition. Skip if nothing applies.</div>
+
+    <div class="ob-tiles" id="condition-tiles">
+      <div class="ob-tile" data-val="celiac disease">Celiac disease</div>
+      <div class="ob-tile" data-val="IBS / FODMAP sensitivity">IBS / FODMAP sensitivity</div>
+      <div class="ob-tile" data-val="type 2 diabetes">Type 2 diabetes</div>
+      <div class="ob-tile" data-val="crohn's disease / IBD">Crohn's disease / IBD</div>
+      <div class="ob-tile" data-val="GERD / acid reflux">GERD / acid reflux</div>
+      <div class="ob-tile" data-val="histamine intolerance">Histamine intolerance</div>
+      <div class="ob-tile" data-val="kidney disease">Kidney disease</div>
+      <div class="ob-tile" data-val="none / not applicable">None / not applicable</div>
+    </div>
+
+    <div class="medical-disclaimer">
+      <i class="ti ti-stethoscope" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+      <div>
+        <strong>Scout is for informational purposes only.</strong> It is not a medical tool and should never replace the advice of your doctor, dietitian, or other qualified health professional. Always consult your healthcare provider about dietary choices related to your condition.
+      </div>
+    </div>
+
+    <div class="ob-actions">
+      <button class="btn-primary" id="ob4-next">Next</button>
+      <button class="btn-ghost" id="ob4-skip">Skip</button>
+    </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING: SCREEN 5 — SUMMARY -->
   <div class="screen" id="s-ob3">
     <div class="page-header"><div class="logo-block"><div class="logo">Scout</div><div class="logo-tagline">Fight Food Fear</div></div></div>
     <div class="page-body">
     <div class="ob-progress" style="margin-top:20px">
+      <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
       <div class="ob-dot done"></div>
@@ -385,6 +430,10 @@
     <div class="ob-summary-card">
       <div class="ob-summary-label">Always flag</div>
       <div class="ob-summary-tags" id="summary-avoid"></div>
+    </div>
+    <div class="ob-summary-card" id="summary-conditions-card" style="display:none">
+      <div class="ob-summary-label">Health conditions</div>
+      <div class="ob-summary-tags" id="summary-conditions"></div>
     </div>
     <div class="ob-actions" style="margin-top:20px">
       <button class="btn-primary" id="ob3-done">Start reading labels ↗</button>
@@ -558,6 +607,7 @@ function init() {
 let dietSelected = null;
 let careSelected = [];
 let avoidSelected = [];
+let conditionsSelected = [];
 
 document.querySelectorAll('#diet-tiles .ob-tile').forEach(t => {
   t.addEventListener('click', () => {
@@ -583,13 +633,43 @@ document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
   });
 });
 
+document.querySelectorAll('#condition-tiles .ob-tile').forEach(t => {
+  t.addEventListener('click', () => {
+    const v = t.dataset.val;
+    if (v === 'none / not applicable') {
+      conditionsSelected = [];
+      document.querySelectorAll('#condition-tiles .ob-tile').forEach(o => o.classList.remove('sel-avoid'));
+      t.classList.add('sel-avoid');
+      conditionsSelected = [v];
+    } else {
+      const noneEl = document.querySelector('#condition-tiles .ob-tile[data-val="none / not applicable"]');
+      if (noneEl) noneEl.classList.remove('sel-avoid');
+      conditionsSelected = conditionsSelected.filter(x => x !== 'none / not applicable');
+      if (conditionsSelected.includes(v)) {
+        conditionsSelected = conditionsSelected.filter(x => x !== v);
+        t.classList.remove('sel-avoid');
+      } else {
+        conditionsSelected.push(v);
+        t.classList.add('sel-avoid');
+      }
+    }
+  });
+});
+
 document.getElementById('ob0-next').addEventListener('click', () => setScreen('s-ob1'));
 document.getElementById('ob1-next').addEventListener('click', () => setScreen('s-ob2'));
+document.getElementById('ob2-next').addEventListener('click', () => setScreen('s-ob4'));
+document.getElementById('ob2-skip').addEventListener('click', () => setScreen('s-ob4'));
+document.getElementById('ob4-next').addEventListener('click', showSummary);
+document.getElementById('ob4-skip').addEventListener('click', showSummary);
 
 function showSummary() {
   const dietEl = document.getElementById('summary-diet');
   const careEl = document.getElementById('summary-care');
   const avoidEl = document.getElementById('summary-avoid');
+  const condEl = document.getElementById('summary-conditions');
+  const condCard = document.getElementById('summary-conditions-card');
+
   dietEl.innerHTML = dietSelected
     ? `<span class="ob-tag-care">${dietSelected}</span>`
     : '<span class="ob-tag-none">Nothing selected</span>';
@@ -599,14 +679,20 @@ function showSummary() {
   avoidEl.innerHTML = avoidSelected.length
     ? avoidSelected.map(v => `<span class="ob-tag-avoid">${v}</span>`).join('')
     : '<span class="ob-tag-none">Nothing selected</span>';
+
+  const realConditions = conditionsSelected.filter(c => c !== 'none / not applicable');
+  if (realConditions.length) {
+    condCard.style.display = 'block';
+    condEl.innerHTML = realConditions.map(v => `<span class="ob-tag-avoid">${v}</span>`).join('');
+  } else {
+    condCard.style.display = 'none';
+  }
   setScreen('s-ob3');
 }
 
-document.getElementById('ob2-next').addEventListener('click', showSummary);
-document.getElementById('ob2-skip').addEventListener('click', showSummary);
-
 document.getElementById('ob3-done').addEventListener('click', () => {
-  profile = { diet: dietSelected, cares: careSelected, avoids: avoidSelected };
+  const realConditions = conditionsSelected.filter(c => c !== 'none / not applicable');
+  profile = { diet: dietSelected, cares: careSelected, avoids: avoidSelected, conditions: realConditions };
   localStorage.setItem('scout_profile', JSON.stringify(profile));
   renderProfileBars();
   setScreen('s-input');
@@ -616,6 +702,7 @@ document.getElementById('edit-profile-btn').addEventListener('click', () => {
   dietSelected = profile ? profile.diet : null;
   careSelected = profile ? [...profile.cares] : [];
   avoidSelected = profile ? [...profile.avoids] : [];
+  conditionsSelected = profile && profile.conditions ? [...profile.conditions] : [];
   document.querySelectorAll('#diet-tiles .ob-tile').forEach(t => {
     t.classList.toggle('sel-care', dietSelected === t.dataset.val);
   });
@@ -625,16 +712,23 @@ document.getElementById('edit-profile-btn').addEventListener('click', () => {
   document.querySelectorAll('#avoid-tiles .ob-tile').forEach(t => {
     t.classList.toggle('sel-avoid', avoidSelected.includes(t.dataset.val));
   });
+  document.querySelectorAll('#condition-tiles .ob-tile').forEach(t => {
+    t.classList.toggle('sel-avoid', conditionsSelected.includes(t.dataset.val));
+  });
   setScreen('s-ob0');
 });
 
 // ── PROFILE BARS ───────────────────────────────────────────────────────────
 function renderProfileBars() {
   if (!profile) return;
+  const conditions = profile.conditions && profile.conditions.length
+    ? profile.conditions.map(c => `<span class="ptag-avoid">${c}</span>`).join('')
+    : '';
   const tags = [
     profile.diet ? `<span class="ptag">${profile.diet}</span>` : '',
     ...profile.cares.map(c => `<span class="ptag">${c}</span>`),
-    ...profile.avoids.map(a => `<span class="ptag-avoid">no ${a}</span>`)
+    ...profile.avoids.map(a => `<span class="ptag-avoid">no ${a}</span>`),
+    conditions
   ].join('');
   document.getElementById('profile-tags-input').innerHTML = tags;
   document.getElementById('profile-tags-results').innerHTML = tags;
@@ -680,6 +774,7 @@ async function analyze(text) {
   const dietPart = profile && profile.diet && profile.diet !== 'not applicable' ? profile.diet + ' diet, ' : '';
   const goals = dietPart + (profile ? profile.cares.join(', ') : '');
   const avoids = profile ? profile.avoids.join(', ') : '';
+  const conditions = profile && profile.conditions && profile.conditions.length ? profile.conditions.join(', ') : '';
 
   let apiDone = false;
   let animDone = false;
@@ -695,7 +790,7 @@ async function analyze(text) {
     const res = await fetch('/.netlify/functions/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ingredients: text, goals, avoids })
+      body: JSON.stringify({ ingredients: text, goals, avoids, conditions })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
