@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scout — Know what's in your food</title>
+  <title>Scout — Fight Food Fear</title>
+  <meta name="description" content="Know what's in your food. Ingredient clarity filtered through your goals. No scores. No verdicts. Just clarity." />
+  <meta name="theme-color" content="#5BAADB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Scout" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
@@ -95,20 +103,6 @@
     .ob-actions { display: flex; align-items: center; gap: 12px; }
 
     .medical-disclaimer { display: flex; align-items: flex-start; gap: 10px; background: #EEF6FC; border: 1.5px solid var(--sky); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 20px; font-size: 13px; color: #1a3a4a; line-height: 1.6; }
-
-    /* CAMERA */
-    .input-divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--text-tertiary); font-size: 13px; }
-    .input-divider::before, .input-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-    .camera-btn-wrap { margin-bottom: 4px; }
-    .btn-camera { width: 100%; font-size: 14px; font-weight: 500; padding: 12px 16px; border-radius: var(--radius-md); cursor: pointer; font-family: inherit; background: var(--bg-card); border: 1.5px dashed var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
-    .btn-camera:hover { border-color: var(--sky); color: var(--sky); background: var(--sky-light); }
-    .photo-preview-wrap { margin-top: 12px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; }
-    .photo-preview-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border-light); }
-    .photo-preview-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .photo-retake-btn { font-size: 12px; color: var(--sky); background: none; border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; }
-    .photo-retake-btn:hover { color: var(--sky-dark); }
-    .photo-preview-img { width: 100%; max-height: 280px; object-fit: cover; display: block; }
-    .photo-tip { font-size: 12px; color: var(--text-tertiary); padding: 8px 14px; display: flex; align-items: center; gap: 6px; }
 
     /* SUMMARY SCREEN */
     .ob-summary-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
@@ -277,6 +271,27 @@
     .scans-btn:hover { background: rgba(255,255,255,0.25); }
     .btn-sm { font-size: 12px; color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; padding: 5px 10px; }
     .btn-sm:hover { background: rgba(255,255,255,0.25); }
+
+    /* CAMERA */
+    .input-divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--text-tertiary); font-size: 13px; }
+    .input-divider::before, .input-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .camera-btn-wrap { margin-bottom: 4px; }
+    .btn-camera { width: 100%; font-size: 14px; font-weight: 500; padding: 12px 16px; border-radius: var(--radius-md); cursor: pointer; font-family: inherit; background: var(--bg-card); border: 1.5px dashed var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+    .btn-camera:hover { border-color: var(--sky); color: var(--sky); background: var(--sky-light); }
+    .photo-preview-wrap { margin-top: 12px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; }
+    .photo-preview-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border-light); }
+    .photo-preview-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .photo-retake-btn { font-size: 12px; color: var(--sky); background: none; border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; }
+    .photo-retake-btn:hover { color: var(--sky-dark); }
+    .photo-preview-img { width: 100%; max-height: 280px; object-fit: cover; display: block; }
+    .photo-tip { font-size: 12px; color: var(--text-tertiary); padding: 8px 14px; display: flex; align-items: center; gap: 6px; }
+
+    /* PWA INSTALL PROMPT */
+    .install-prompt { background: var(--bg-card); border: 1.5px solid var(--sky); border-radius: var(--radius-lg); padding: 14px; margin-top: 20px; }
+    .install-prompt-body { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .install-prompt-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+    .install-prompt-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .install-prompt-actions { display: flex; align-items: center; gap: 12px; }
   </style>
 </head>
 <body>
@@ -484,29 +499,26 @@
     <div class="input-label">Paste the ingredient list</div>
     <textarea id="ing-input" placeholder="e.g. Enriched Wheat Flour (wheat flour, niacin...), Sugar, Palm Oil, Salt..."></textarea>
     <div class="hint">Copy from any food label or nutrition website. Paste it exactly as written.</div>
-
-    <div class="input-divider"><span>or</span></div>
-
-    <div class="camera-btn-wrap">
-      <button class="btn-camera" id="camera-btn"><i class="ti ti-camera" style="font-size:15px"></i> Take a photo of the label</button>
-      <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" />
-    </div>
-
-    <div class="photo-preview-wrap" id="photo-preview-wrap" style="display:none">
-      <div class="photo-preview-header">
-        <span class="photo-preview-label">Label photo</span>
-        <button class="photo-retake-btn" id="photo-retake-btn"><i class="ti ti-refresh" style="font-size:13px"></i> Retake</button>
-      </div>
-      <img id="photo-preview-img" class="photo-preview-img" alt="Food label photo" />
-      <div class="photo-tip"><i class="ti ti-info-circle" style="font-size:13px"></i> Make sure the ingredient list is in focus and well-lit for best results.</div>
-    </div>
-
-    <div class="input-actions" style="margin-top:16px">
+    <div class="input-actions">
       <button class="btn-primary" id="analyze-btn">Analyze ↗</button>
       <button class="btn-ghost" id="demo-btn">Try an example</button>
     </div>
 
     <div class="toast toast-error" id="toast-error"><i class="ti ti-alert-circle" style="font-size:14px"></i> <span id="error-msg">Something went wrong. Try again.</span></div>
+
+    <div class="install-prompt" id="install-prompt" style="display:none">
+      <div class="install-prompt-body">
+        <i class="ti ti-device-mobile" style="font-size:18px;color:var(--sky);flex-shrink:0"></i>
+        <div>
+          <div class="install-prompt-title">Add Scout to your home screen</div>
+          <div class="install-prompt-sub">Tap once to open Scout like an app — no App Store needed.</div>
+        </div>
+      </div>
+      <div class="install-prompt-actions">
+        <button class="btn-primary" id="install-btn" style="font-size:13px;padding:8px 16px">Add to home screen</button>
+        <button class="btn-ghost" id="install-dismiss" style="font-size:12px">Not now</button>
+      </div>
+    </div>
     </div>
   </div>
 
@@ -792,73 +804,15 @@ function animateSteps(cb) {
   setTimeout(cb, 2200);
 }
 
-// ── CAMERA ─────────────────────────────────────────────────────────────────
-let capturedImageBase64 = null;
-let capturedImageType = null;
-
-document.getElementById('camera-btn').addEventListener('click', () => {
-  document.getElementById('camera-input').click();
-});
-
-document.getElementById('camera-input').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const resized = await resizeImage(file, 1200);
-  capturedImageBase64 = resized.base64;
-  capturedImageType = resized.type;
-
-  const img = document.getElementById('photo-preview-img');
-  img.src = `data:${resized.type};base64,${resized.base64}`;
-  document.getElementById('photo-preview-wrap').style.display = 'block';
-  document.getElementById('ing-input').value = '';
-  e.target.value = '';
-});
-
-document.getElementById('photo-retake-btn').addEventListener('click', () => {
-  capturedImageBase64 = null;
-  capturedImageType = null;
-  document.getElementById('photo-preview-wrap').style.display = 'none';
-  document.getElementById('photo-preview-img').src = '';
-  document.getElementById('camera-input').click();
-});
-
-async function resizeImage(file, maxWidth) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        resolve({
-          base64: dataUrl.split(',')[1],
-          type: 'image/jpeg'
-        });
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 // ── ANALYZE ────────────────────────────────────────────────────────────────
-async function analyze(text, imageBase64, imageType) {
+async function analyze(text) {
   setScreen('s-loading');
   document.getElementById('toast-error').classList.remove('show');
 
   const loadSub = document.getElementById('load-sub');
-  if (imageBase64) {
-    loadSub.textContent = "Reading the label photo...";
-  } else {
-    loadSub.textContent = text.length > 400
-      ? "That's a long list — this may take a bit longer than usual"
-      : "Breaking down each ingredient for your goals";
-  }
+  loadSub.textContent = text.length > 400
+    ? "That's a long list — this may take a bit longer than usual"
+    : "Breaking down each ingredient for your goals";
 
   const dietPart = profile && profile.diet && profile.diet !== 'not applicable' ? profile.diet + ' diet, ' : '';
   const goals = dietPart + (profile ? profile.cares.join(', ') : '');
@@ -876,14 +830,10 @@ async function analyze(text, imageBase64, imageType) {
   animateSteps(() => { animDone = true; tryRender(); });
 
   try {
-    const payload = imageBase64
-      ? { imageBase64, imageType, goals, avoids, conditions }
-      : { ingredients: text, goals, avoids, conditions };
-
     const res = await fetch('/.netlify/functions/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ ingredients: text, goals, avoids, conditions })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -900,21 +850,12 @@ async function analyze(text, imageBase64, imageType) {
 }
 
 document.getElementById('analyze-btn').addEventListener('click', () => {
-  if (capturedImageBase64) {
-    analyze(null, capturedImageBase64, capturedImageType);
-    capturedImageBase64 = null;
-    capturedImageType = null;
-    document.getElementById('photo-preview-wrap').style.display = 'none';
-  } else {
-    const text = document.getElementById('ing-input').value.trim();
-    if (!text) return;
-    analyze(text);
-  }
+  const text = document.getElementById('ing-input').value.trim();
+  if (!text) return;
+  analyze(text);
 });
 
 document.getElementById('demo-btn').addEventListener('click', () => {
-  capturedImageBase64 = null;
-  document.getElementById('photo-preview-wrap').style.display = 'none';
   document.getElementById('ing-input').value = DEMO;
   analyze(DEMO);
 });
@@ -1080,6 +1021,37 @@ function showToast(id, msg) {
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2800);
 }
+
+// ── PWA INSTALL ────────────────────────────────────────────────────────────
+let deferredInstallPrompt = null;
+const installPromptEl = document.getElementById('install-prompt');
+const installDismissKey = 'scout_install_dismissed';
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!localStorage.getItem(installDismissKey)) {
+    installPromptEl.style.display = 'block';
+  }
+});
+
+document.getElementById('install-btn').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installPromptEl.style.display = 'none';
+});
+
+document.getElementById('install-dismiss').addEventListener('click', () => {
+  installPromptEl.style.display = 'none';
+  localStorage.setItem(installDismissKey, '1');
+});
+
+window.addEventListener('appinstalled', () => {
+  installPromptEl.style.display = 'none';
+  deferredInstallPrompt = null;
+});
 
 // ── START ──────────────────────────────────────────────────────────────────
 init();
