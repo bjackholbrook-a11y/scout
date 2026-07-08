@@ -3,19 +3,12 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  let ingredients, goals, avoids, conditions;
+  let ingredients, imageBase64, imageType, goals, avoids, conditions;
   try {
-    ({ ingredients, goals, avoids, conditions } = JSON.parse(event.body));
+    ({ ingredients, imageBase64, imageType, goals, avoids, conditions } = JSON.parse(event.body));
   } catch (e) {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid request body" }) };
   }
-
-  const cleaned = ingredients
-    .replace(/\[/g, "(")
-    .replace(/\]/g, ")")
-    .replace(/contains\s+\d+%\s+or\s+less\s+of[:\s]*/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
 
   const conditionGuidance = conditions ? buildConditionGuidance(conditions) : '';
 
@@ -24,10 +17,34 @@ exports.handler = async function (event) {
 flag=conflicts with avoids/goals/conditions. positive=helps goals. caution=notable. neutral=fine. section=flagged only if flag, else other. Keep parent ingredients whole. Ignore "contains X% or less of".${conditionGuidance}`;
 
   const conditionsPart = conditions ? `\nHealth conditions: ${conditions}.` : '';
+  const profilePart = `\nGoals: ${goals || "none"}.\nAvoiding: ${avoids || "nothing"}.${conditionsPart}`;
 
-  const userMessage = `Ingredients: ${cleaned}
-Goals: ${goals || "none"}.
-Avoiding: ${avoids || "nothing"}.${conditionsPart}`;
+  // Build message content — image or text
+  let messageContent;
+  if (imageBase64 && imageType) {
+    messageContent = [
+      {
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: imageType,
+          data: imageBase64
+        }
+      },
+      {
+        type: "text",
+        text: `This is a photo of a food product label. Please extract the ingredient list from the image and analyze each ingredient.${profilePart}`
+      }
+    ];
+  } else {
+    const cleaned = (ingredients || '')
+      .replace(/\[/g, "(")
+      .replace(/\]/g, ")")
+      .replace(/contains\s+\d+%\s+or\s+less\s+of[:\s]*/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    messageContent = `Ingredients: ${cleaned}${profilePart}`;
+  }
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -41,7 +58,7 @@ Avoiding: ${avoids || "nothing"}.${conditionsPart}`;
         model: "claude-sonnet-4-6",
         max_tokens: 2500,
         system,
-        messages: [{ role: "user", content: userMessage }],
+        messages: [{ role: "user", content: messageContent }],
       }),
     });
 
@@ -80,20 +97,16 @@ function extractJSON(text) {
   const jsonStart = text.indexOf("{");
   const jsonEnd = text.lastIndexOf("}");
   if (jsonStart === -1 || jsonEnd === -1) return null;
-
   let jsonStr = text.substring(jsonStart, jsonEnd + 1);
-
-  // Try parsing as-is first
   try {
     return JSON.parse(jsonStr);
   } catch (e) {
-    // Clean up common issues and retry
     try {
       jsonStr = jsonStr
-        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ') // control characters
-        .replace(/,\s*}/g, '}')                          // trailing commas in objects
-        .replace(/,\s*]/g, ']')                          // trailing commas in arrays
-        .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3'); // unquoted keys
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']')
+        .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
       return JSON.parse(jsonStr);
     } catch (e2) {
       return null;
